@@ -18,15 +18,16 @@ import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
 import { screenHeading } from "../StaticFiles/BasicStyles";
 import AddOwnsersInfoComponent from "../Components/AddOwnsersInfoComponent";
 import AddVehicleInformationComponent from "../Components/AddVehicleInformationComponent";
+import AddServicesInfoComponent from "../Components/AddServicesInfoComponent";
 import Stepper from "../Components/Stepper";
 import { stepperArray } from "../StaticFiles/staticData";
 
 export default function AddVehicleScreen() {
   const [currentStep, setCurrentStep] = useState(1);
   const [lastCompletedStep, setLastCompletedStep] = useState(0);
+  const [selectedVehicleType, setSelectedVehicleType] = useState(0);
 
   const goThroughSteps = (isForward) => {
-    console.log(isForward);
     if (isForward === true) {
       setLastCompletedStep(lastCompletedStep + 1);
       setCurrentStep(currentStep + 1);
@@ -34,6 +35,11 @@ export default function AddVehicleScreen() {
       setLastCompletedStep(lastCompletedStep - 1);
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  const selectVehicleType = (index) => {
+    //console.log(index);
+    setSelectedVehicleType(index);
   };
   return (
     <View style={styles.wrapperContainer}>
@@ -50,7 +56,16 @@ export default function AddVehicleScreen() {
         <AddOwnsersInfoComponent goThroughStepsFunc={goThroughSteps} />
       )}
       {currentStep === 2 && (
-        <AddVehicleInformationComponent goThroughStepsFunc={goThroughSteps} />
+        <AddVehicleInformationComponent
+          goThroughStepsFunc={goThroughSteps}
+          setVehicleType={selectVehicleType}
+        />
+      )}
+      {currentStep === 3 && (
+        <AddServicesInfoComponent
+          goThroughStepsFunc={goThroughSteps}
+          selectedVehicleTypeIndex={selectedVehicleType}
+        />
       )}
 
       {/* <ProgressSteps>

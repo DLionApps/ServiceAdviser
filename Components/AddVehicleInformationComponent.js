@@ -1,5 +1,5 @@
 // import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -20,24 +20,53 @@ import {
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
+import { VehicleValidationSchema } from "../Constents/ValidationScheemas";
+import { VehicleContext } from "../Contexts/VehicleContext";
 
 export default function AddVehicleInformationComponent(props) {
   //   const Stack = createStackNavigator();
+  const { vehicleState } = useContext(VehicleContext);
+  const [vehicle, setVehicle] = vehicleState;
   const [forwardBtnDisabled, setForwardBtnDisabled] = useState(true);
   const [backwardBtnDisabled, setbackwrdBtnDisabled] = useState(true);
-  const [fuelType, setFuelType] = useState([]);
+  const [fuelType, setFuelType] = useState(
+    vehicle === undefined ? [] : vehicle.fuelType
+  );
+  const [vehicleType, setVehicleType] = useState(
+    vehicle === undefined ? 0 : vehicle.vehicleType
+  );
+  const [vehicleFuelTypeError, setVehicleFuelTypeError] = useState(false);
 
   const goBack = () => {
     props.goThroughStepsFunc(false);
   };
 
   const fueltypeChange = (item) => {
+    if (item.length === 0) {
+      setVehicleFuelTypeError(true);
+    } else {
+      setVehicleFuelTypeError(false);
+    }
     setFuelType(item);
   };
 
   const storeVehicleInfo = (values) => {
-    console.log(values);
+    // if (fuelType.length !== 0) {
+    if (Object.keys(values).length !== 0) {
+      values.fuelType = fuelType;
+      values.vehicleType = vehicleType;
+      setVehicle(values);
+
+      props.goThroughStepsFunc(true);
+    }
+    // } else {
+    //   setVehicleFuelTypeError(true);
+    // }
   };
+
+  useEffect(() => {
+    props.setVehicleType(vehicleType);
+  }, [vehicleType]);
 
   return (
     <KeyboardAvoidingView
@@ -47,14 +76,12 @@ export default function AddVehicleInformationComponent(props) {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Formik
           initialValues={{
-            VRN: "",
-            nickName: "",
-            make: "",
-            model: "",
-            // milleage: "",
-            mfgYear: "",
+            VRN: vehicle === undefined ? "" : vehicle.VRN,
+            make: vehicle === undefined ? "" : vehicle.make,
+            model: vehicle === undefined ? "" : vehicle.model,
+            mfgYear: vehicle === undefined ? "" : vehicle.mfgYear,
           }}
-          // validationSchema={OwnerValidationSchema}
+          // validationSchema={VehicleValidationSchema}
           onSubmit={(values) => storeVehicleInfo(values)}
         >
           {({
@@ -108,17 +135,7 @@ export default function AddVehicleInformationComponent(props) {
                   errorMessage={touched.model && errors.model}
                 />
               </View>
-              <View style={styles.container}>
-                {/* <Input
-                  label="Milleage"
-                  containerStyle={styles.textBoxStyles}
-                  leftIcon={<Icon name="envelope" size={18} color="#fff" />}
-                  onChangeText={handleChange("milleage")}
-                  onBlur={handleBlur("milleage")}
-                  keyboardType="decimal-pad"
-                  value={values.milleage}
-                  errorMessage={touched.milleage && errors.milleage}
-                /> */}
+              <View style={[styles.container, { width: "100%" }]}>
                 <Input
                   label="Manufactured Year"
                   containerStyle={styles.textBoxStyles}
@@ -129,15 +146,48 @@ export default function AddVehicleInformationComponent(props) {
                   value={values.mfgYear}
                   errorMessage={touched.mfgYear && errors.mfgYear}
                 />
+              </View>
+              <View
+                style={[
+                  styles.container,
+                  { paddingLeft: "2%", paddingRight: "2%" },
+                ]}
+              >
                 <ButtonGroup
-                  // onPress={this.updateIndex}
-                  selectedIndex={0}
+                  onPress={(e) => setVehicleType(e)}
+                  selectedIndex={vehicleType}
                   buttons={vehicleTypes}
-                  containerStyle={{ width: "50%" }}
+                  containerStyle={{
+                    width: "100%",
+                    borderWidth: responsiveWidth(0.2),
+                    borderColor: "gray",
+                  }}
+                  selectedButtonStyle={{
+                    backgroundColor: Colors.completedColor,
+                  }}
                 />
               </View>
-              <View style={{ width: "100%" }}>
+              <View style={{ width: "100%", paddingTop: "6%" }}>
                 <SectionedMultiSelect
+                  styles={{
+                    selectToggle: {
+                      borderColor: "gray",
+                      borderWidth: responsiveWidth(0.2),
+                      width: "96%",
+                      alignSelf: "center",
+                    },
+                    chipsWrapper: {
+                      // alignContent: "center",
+                      width: "96%",
+                      alignSelf: "center",
+                    },
+                    chipContainer: {
+                      backgroundColor: Colors.completedColor,
+                    },
+                    button: {
+                      backgroundColor: Colors.completedColor,
+                    },
+                  }}
                   items={vehiclePowerSources}
                   uniqueKey="id"
                   subKey="children"
@@ -147,6 +197,11 @@ export default function AddVehicleInformationComponent(props) {
                   onSelectedItemsChange={fueltypeChange}
                   selectedItems={fuelType}
                 />
+                {vehicleFuelTypeError === true && (
+                  <Text style={styles.powerSourceError}>
+                    Vehicle Power Source is required
+                  </Text>
+                )}
               </View>
               <View style={styles.btnContainer}>
                 <Button
@@ -213,5 +268,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   typeButtonIcon: responsiveFontSize(4),
-  sss: {},
+  powerSourceError: {
+    paddingLeft: "4%",
+    fontSize: responsiveFontSize(1.66),
+    color: "red",
+  },
 });

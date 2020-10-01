@@ -21,4 +21,10 @@ const Colors = {
   // completedTextColor: "rgb(0, 0, 0)",
 };
 
-export { screenHeading, StepperStyles, Colors };
+const CustomTexts = {
+  fontSize: responsiveFontSize(2.1),
+  color: "gray",
+  fontWeight: "bold",
+};
+
+export { screenHeading, StepperStyles, Colors, CustomTexts };

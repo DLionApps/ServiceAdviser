@@ -32,7 +32,7 @@ export default function AddOwnsersInfoComponent(props) {
 
   const storeOwnerInfo = (owner) => {
     if (Object.keys(owner).length !== 0) {
-      console.log(owner);
+      setOwner(owner);
       props.goThroughStepsFunc(true);
     }
   };
@@ -49,12 +49,12 @@ export default function AddOwnsersInfoComponent(props) {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Formik
           initialValues={{
-            fName: "",
-            lName: "",
-            contactNumber: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
+            fName: owner === undefined ? "" : owner.fName,
+            lName: owner === undefined ? "" : owner.lName,
+            contactNumber: owner === undefined ? "" : owner.contactNumber,
+            email: owner === undefined ? "" : owner.email,
+            password: owner === undefined ? "" : owner.password,
+            confirmPassword: owner === undefined ? "" : owner.confirmPassword,
           }}
           // validationSchema={OwnerValidationSchema}
           onSubmit={(values) => storeOwnerInfo(values)}

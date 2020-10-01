@@ -55,9 +55,9 @@ const vehiclePowerSources = [
   // },
 ];
 
-const vehicleTypeOne = () => <Icon name="car" size={24} color="red" />;
-const vehicleTypeTwo = () => <Icon name="bus" size={24} color="green" />;
-const vehicleTypeThree = () => <Icon name="ship" size={24} color="blue" />;
+const vehicleTypeOne = () => <Icon name="car" size={24} color="gray" />;
+const vehicleTypeTwo = () => <Icon name="bus" size={24} color="gray" />;
+const vehicleTypeThree = () => <Icon name="ship" size={24} color="gray" />;
 
 const vehicleTypes = [
   { element: vehicleTypeOne },
@@ -65,4 +65,19 @@ const vehicleTypes = [
   { element: vehicleTypeThree },
 ];
 
-export { stepperArray, vehiclePowerSources, vehicleTypes };
+var monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+export { stepperArray, vehiclePowerSources, vehicleTypes, monthNames };

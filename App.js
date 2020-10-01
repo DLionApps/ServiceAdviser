@@ -8,21 +8,27 @@ import { createStackNavigator } from "@react-navigation/stack";
 import AddVehicleScreen from "./Screens/AddVehicleScreen";
 
 import { OwnerProvider } from "./Contexts/OwnerContext";
+import { VehicleProvider } from "./Contexts/VehicleContext";
+import { ServiceProvider } from "./Contexts/ServiceContext";
 
 export default function App() {
   const Stack = createStackNavigator();
 
   return (
     <OwnerProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Welcome">
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="AddVehicle"
-            component={AddVehicleScreen}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <VehicleProvider>
+        <ServiceProvider>
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="Welcome">
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="AddVehicle"
+                component={AddVehicleScreen}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </ServiceProvider>
+      </VehicleProvider>
     </OwnerProvider>
   );
 }

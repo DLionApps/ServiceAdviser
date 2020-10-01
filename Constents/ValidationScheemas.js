@@ -59,5 +59,67 @@ const OwnerValidationSchema = Yup.object().shape({
   fName: Yup.string().required("First Name is required"),
 });
 
+const VehicleValidationSchema = Yup.object().shape({
+  VRN: Yup.string().required("Registration Number is required"),
+  make: Yup.string().required("Make is required"),
+  model: Yup.string().required("Model is required"),
+  mfgYear: Yup.string()
+    .matches(/^[0-9]+$/, "Contact Number must be digits")
+    .min(4, "Must be exactly 4 digits")
+    .max(4, "Must be exactly 4 digits")
+    .required("Manufactured Year is required"),
+});
+
+const MileageServiceValidationSchema = Yup.object().shape({
+  mileage: Yup.number()
+    .positive()
+    .integer()
+    .required("Total Mileage is required"),
+  // workingHours: Yup.number()
+  //   .positive()
+  //   .integer()
+  //   .required("Total Working Hours is required"),
+  lastServiceMileage: Yup.number()
+    .positive()
+    .integer()
+    .required("Recent Oil & Manintenence Service Mileage is required"),
+  // lastServiceHours: Yup.number()
+  //   .positive()
+  //   .integer()
+  //   .required("Recent Oil & Manintenence Service Hours is required"),
+  // lastServiceDate: Yup.string().required(
+  //   "Recent Oil & Manintenence Service Date is required"
+  // ),
+});
+
+const HourServiceValidationSchema = Yup.object().shape({
+  // mileage: Yup.number()
+  //   .positive()
+  //   .integer()
+  //   .required("Total Mileage is required"),
+  workingHours: Yup.number()
+    .positive()
+    .integer()
+    .required("Total Working Hours is required"),
+  // lastServiceMileage: Yup.number()
+  //   .positive()
+  //   .integer()
+  //   .required("Recent Oil & Manintenence Service Mileage is required"),
+  lastServiceHours: Yup.number()
+    .positive()
+    .integer()
+    .required("Recent Oil & Manintenence Service Hours is required"),
+  // lastServiceDate: Yup.string().required(
+  //   "Recent Oil & Manintenence Service Date is required"
+  // ),
+});
+
 //https://itnext.io/simple-react-form-validation-with-formik-yup-and-or-spected-206ebe9e7dcc
-export { LoginSchema, SignupSchema, OwnerValidationSchema };
+export {
+  LoginSchema,
+  SignupSchema,
+  OwnerValidationSchema,
+  VehicleValidationSchema,
+  MileageServiceValidationSchema,
+  HourServiceValidationSchema,
+};
