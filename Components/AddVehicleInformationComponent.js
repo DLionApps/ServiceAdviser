@@ -24,7 +24,6 @@ import { VehicleValidationSchema } from "../Constents/ValidationScheemas";
 import { VehicleContext } from "../Contexts/VehicleContext";
 
 export default function AddVehicleInformationComponent(props) {
-  //   const Stack = createStackNavigator();
   const { vehicleState } = useContext(VehicleContext);
   const [vehicle, setVehicle] = vehicleState;
   const [forwardBtnDisabled, setForwardBtnDisabled] = useState(true);
@@ -51,17 +50,17 @@ export default function AddVehicleInformationComponent(props) {
   };
 
   const storeVehicleInfo = (values) => {
-    // if (fuelType.length !== 0) {
-    if (Object.keys(values).length !== 0) {
-      values.fuelType = fuelType;
-      values.vehicleType = vehicleType;
-      setVehicle(values);
+    if (fuelType.length !== 0) {
+      if (Object.keys(values).length !== 0) {
+        values.fuelType = fuelType;
+        values.vehicleType = vehicleType;
+        setVehicle(values);
 
-      props.goThroughStepsFunc(true);
+        props.goThroughStepsFunc(true);
+      }
+    } else {
+      setVehicleFuelTypeError(true);
     }
-    // } else {
-    //   setVehicleFuelTypeError(true);
-    // }
   };
 
   useEffect(() => {
@@ -77,11 +76,12 @@ export default function AddVehicleInformationComponent(props) {
         <Formik
           initialValues={{
             VRN: vehicle === undefined ? "" : vehicle.VRN,
+            nickName: vehicle === undefined ? "" : vehicle.nickName,
             make: vehicle === undefined ? "" : vehicle.make,
             model: vehicle === undefined ? "" : vehicle.model,
             mfgYear: vehicle === undefined ? "" : vehicle.mfgYear,
           }}
-          // validationSchema={VehicleValidationSchema}
+          validationSchema={VehicleValidationSchema}
           onSubmit={(values) => storeVehicleInfo(values)}
         >
           {({
@@ -225,9 +225,6 @@ export default function AddVehicleInformationComponent(props) {
                 <Button
                   type="clear"
                   onPress={handleSubmit}
-                  // onPress={() => {
-                  //   console.log("in");
-                  // }}
                   title="Next"
                   titleStyle={styles.btnText}
                 />
@@ -248,11 +245,7 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight + 10,
   },
   container: {
-    // flex: 1,
     flexDirection: "row",
-
-    // alignItems: "center",
-    // justifyContent: "center",
   },
   textBoxStyles: {
     width: "50%",

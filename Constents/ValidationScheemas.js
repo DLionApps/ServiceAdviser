@@ -75,43 +75,21 @@ const MileageServiceValidationSchema = Yup.object().shape({
     .positive()
     .integer()
     .required("Total Mileage is required"),
-  // workingHours: Yup.number()
-  //   .positive()
-  //   .integer()
-  //   .required("Total Working Hours is required"),
   lastServiceMileage: Yup.number()
     .positive()
     .integer()
     .required("Recent Oil & Manintenence Service Mileage is required"),
-  // lastServiceHours: Yup.number()
-  //   .positive()
-  //   .integer()
-  //   .required("Recent Oil & Manintenence Service Hours is required"),
-  // lastServiceDate: Yup.string().required(
-  //   "Recent Oil & Manintenence Service Date is required"
-  // ),
 });
 
 const HourServiceValidationSchema = Yup.object().shape({
-  // mileage: Yup.number()
-  //   .positive()
-  //   .integer()
-  //   .required("Total Mileage is required"),
   workingHours: Yup.number()
     .positive()
     .integer()
     .required("Total Working Hours is required"),
-  // lastServiceMileage: Yup.number()
-  //   .positive()
-  //   .integer()
-  //   .required("Recent Oil & Manintenence Service Mileage is required"),
   lastServiceHours: Yup.number()
     .positive()
     .integer()
     .required("Recent Oil & Manintenence Service Hours is required"),
-  // lastServiceDate: Yup.string().required(
-  //   "Recent Oil & Manintenence Service Date is required"
-  // ),
 });
 
 //https://itnext.io/simple-react-form-validation-with-formik-yup-and-or-spected-206ebe9e7dcc

@@ -17,9 +17,6 @@ import { Button, Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Formik } from "formik";
 import { ScrollView } from "react-native-gesture-handler";
-import DropDownPicker from "react-native-dropdown-picker";
-import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
-import { screenHeading } from "../StaticFiles/BasicStyles";
 import { Colors } from "../StaticFiles/BasicStyles";
 import { OwnerValidationSchema } from "../Constents/ValidationScheemas";
 import { OwnerContext } from "../Contexts/OwnerContext";
@@ -56,7 +53,7 @@ export default function AddOwnsersInfoComponent(props) {
             password: owner === undefined ? "" : owner.password,
             confirmPassword: owner === undefined ? "" : owner.confirmPassword,
           }}
-          // validationSchema={OwnerValidationSchema}
+          validationSchema={OwnerValidationSchema}
           onSubmit={(values) => storeOwnerInfo(values)}
         >
           {({
@@ -138,7 +135,6 @@ export default function AddOwnsersInfoComponent(props) {
                   type="clear"
                   onPress={() => {
                     // goBack();
-                    // handleSubmit
                   }}
                   title="Back"
                   titleStyle={[
@@ -155,9 +151,6 @@ export default function AddOwnsersInfoComponent(props) {
                 <Button
                   type="clear"
                   onPress={handleSubmit}
-                  // onPress={() => {
-                  //   console.log("in");
-                  // }}
                   title="Next"
                   titleStyle={styles.btnText}
                 />
@@ -178,11 +171,7 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight + 10,
   },
   container: {
-    // flex: 1,
     flexDirection: "row",
-
-    // alignItems: "center",
-    // justifyContent: "center",
   },
   textBoxStyles: {
     width: "50%",

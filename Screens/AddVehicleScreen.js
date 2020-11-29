@@ -22,7 +22,7 @@ import AddServicesInfoComponent from "../Components/AddServicesInfoComponent";
 import Stepper from "../Components/Stepper";
 import { stepperArray } from "../StaticFiles/staticData";
 
-export default function AddVehicleScreen() {
+export default function AddVehicleScreen({ navigation }) {
   const [currentStep, setCurrentStep] = useState(1);
   const [lastCompletedStep, setLastCompletedStep] = useState(0);
   const [selectedVehicleType, setSelectedVehicleType] = useState(0);
@@ -38,7 +38,6 @@ export default function AddVehicleScreen() {
   };
 
   const selectVehicleType = (index) => {
-    //console.log(index);
     setSelectedVehicleType(index);
   };
   return (
@@ -46,7 +45,6 @@ export default function AddVehicleScreen() {
       <Text style={screenHeading}>Add New Vehicle</Text>
       <View style={styles.stepperWrapper}>
         <Stepper
-          // stepCount={1}
           stepData={stepperArray}
           currentStep={currentStep}
           lastCompletedStep={lastCompletedStep}
@@ -65,27 +63,9 @@ export default function AddVehicleScreen() {
         <AddServicesInfoComponent
           goThroughStepsFunc={goThroughSteps}
           selectedVehicleTypeIndex={selectedVehicleType}
+          navigation={navigation}
         />
       )}
-
-      {/* <ProgressSteps>
-        <ProgressStep label="Add Owner's Information">
-          <View style={{ alignItems: "center" }}>
-            <Text>This is the content within step 1!</Text>
-            <AddOwnsersInfoComponent />
-          </View>
-        </ProgressStep>
-        <ProgressStep label="Add Vehicle Information">
-          <View style={{ alignItems: "center" }}>
-            <Text>This is the content within step 2!</Text>
-          </View>
-        </ProgressStep>
-        <ProgressStep label="Add Service Information">
-          <View style={{ alignItems: "center" }}>
-            <Text>This is the content within step 3!</Text>
-          </View>
-        </ProgressStep>
-      </ProgressSteps> */}
     </View>
   );
 }
@@ -96,12 +76,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     paddingTop: StatusBar.currentHeight + 10,
-    // backgroundColor: "yellow",
   },
   stepperWrapper: {
-    // paddingTop: "5%",
-    // height: "10%",
     width: "100%",
-    // backgroundColor: "blue",
   },
 });
