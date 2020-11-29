@@ -6,6 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import AddVehicleScreen from "./Screens/AddVehicleScreen";
+import HomeScreen from "./Screens/HomeScreen";
 
 import { OwnerProvider } from "./Contexts/OwnerContext";
 import { VehicleProvider } from "./Contexts/VehicleContext";
@@ -19,11 +20,16 @@ export default function App() {
       <VehicleProvider>
         <ServiceProvider>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="Welcome">
+            <Stack.Navigator initialRouteName="AddVehicle">
               <Stack.Screen
                 options={{ headerShown: false }}
                 name="AddVehicle"
                 component={AddVehicleScreen}
+              />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="Home"
+                component={HomeScreen}
               />
             </Stack.Navigator>
           </NavigationContainer>
