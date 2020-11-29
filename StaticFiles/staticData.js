@@ -57,12 +57,12 @@ const vehiclePowerSources = [
 
 const vehicleTypeOne = () => <Icon name="car" size={24} color="gray" />;
 const vehicleTypeTwo = () => <Icon name="bus" size={24} color="gray" />;
-const vehicleTypeThree = () => <Icon name="ship" size={24} color="gray" />;
+// const vehicleTypeThree = () => <Icon name="ship" size={24} color="gray" />;
 
 const vehicleTypes = [
   { element: vehicleTypeOne },
   { element: vehicleTypeTwo },
-  { element: vehicleTypeThree },
+  // { element: vehicleTypeThree },
 ];
 
 var monthNames = [
