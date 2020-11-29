@@ -1,5 +1,4 @@
-// import { StatusBar } from "expo-status-bar";
-import React, { useState, createRef, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -9,41 +8,47 @@ import {
   Keyboard,
   StatusBar,
   TouchableOpacity,
+  ActivityIndicator,
+  ToastAndroid,
+  BackHandler,
 } from "react-native";
-import { Button, Input, Text, ButtonGroup } from "react-native-elements";
+import { Button, Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Formik } from "formik";
 import { ScrollView } from "react-native-gesture-handler";
 import { Colors, CustomTexts } from "../StaticFiles/BasicStyles";
-import {
-  vehiclePowerSources,
-  vehicleTypes,
-  monthNames,
-} from "../StaticFiles/staticData";
+import { monthNames } from "../StaticFiles/staticData";
 import {
   responsiveWidth,
   responsiveFontSize,
   responsiveHeight,
 } from "react-native-responsive-dimensions";
-import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import {
   MileageServiceValidationSchema,
   HourServiceValidationSchema,
 } from "../Constents/ValidationScheemas";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { ServiceContext } from "../Contexts/ServiceContext";
+import { OwnerContext } from "../Contexts/OwnerContext";
+import { VehicleContext } from "../Contexts/VehicleContext";
+import { login, signup } from "../CommonFunctions/Auth";
+import { createVehicle } from "../CommonFunctions/Vehicle";
+import { createService } from "../CommonFunctions/Service";
 
 export default function AddServicesInfoComponent(props) {
-  //   const Stack = createStackNavigator();
   const { serviceState } = useContext(ServiceContext);
   const [service, setService] = serviceState;
+  const { ownerState } = useContext(OwnerContext);
+  const [owner, setOwner] = ownerState;
+  const { vehicleState } = useContext(VehicleContext);
+  const [vehicle, setVehicle] = vehicleState;
   const [forwardBtnDisabled, setForwardBtnDisabled] = useState(true);
   const [backwardBtnDisabled, setbackwrdBtnDisabled] = useState(true);
-  const [fuelType, setFuelType] = useState([]);
-  const [vehicleType, setVehicleType] = useState(0);
   const [selectedVehicleType, setSelectedVehicleType] = useState(
     props.selectedVehicleTypeIndex
   );
+  const [isLoadingVisible, setIsLoadingVisible] = useState(false);
+  const [isElementsDisabled, setisElementsDisabled] = useState(false);
 
   const [date, setDate] = useState(
     service === undefined ? undefined : service.lastServiceDate
@@ -51,7 +56,7 @@ export default function AddServicesInfoComponent(props) {
   const [show, setShow] = useState(false);
   const [dateError, setDateError] = useState(false);
 
-  const onChange = (event, selectedDate) => {
+  const onDateChange = (event, selectedDate) => {
     const formatDate = (date) => {
       return (
         date.getDate() +
@@ -69,6 +74,7 @@ export default function AddServicesInfoComponent(props) {
       setDateError(false);
     }
     setDate(currentDate);
+    setService;
   };
 
   const showDatepicker = () => {
@@ -82,14 +88,92 @@ export default function AddServicesInfoComponent(props) {
   const storeServiceInfo = (values) => {
     if (date !== undefined) {
       if (Object.keys(values).length !== 0) {
-        values.lastServiceDate = date;
-        console.log(values);
         setService(values);
+        let castedServiceObj = {
+          lastServiceHours:
+            selectedVehicleType === 1
+              ? parseInt(values.lastServiceHours)
+              : undefined,
+          workingHours:
+            selectedVehicleType === 1
+              ? parseInt(values.workingHours)
+              : undefined,
+          lastServiceMileage:
+            selectedVehicleType === 0
+              ? parseInt(values.lastServiceMileage)
+              : undefined,
+          mileage:
+            selectedVehicleType === 0 ? parseInt(values.mileage) : undefined,
+          lastServiceDate: date,
+        };
 
+        let castedVehicleObj = {
+          VRN: vehicle.VRN,
+          nickName: vehicle.nickName === "" ? undefined : vehicle.nickName,
+          fuelType: vehicle.fuelType,
+          make: vehicle.make,
+          mfgYear: parseInt(vehicle.mfgYear),
+          model: vehicle.model,
+          vehicleType: parseInt(vehicle.vehicleType),
+        };
+
+        const { confirmPassword, ...ownerWithoutConfirmPassword } = owner;
+
+        let castedOwnerObj = ownerWithoutConfirmPassword;
+
+        sendAPICalls(castedOwnerObj, castedServiceObj, castedVehicleObj);
         // props.goThroughStepsFunc(true);
       }
     } else {
       setDateError(true);
+    }
+  };
+
+  const elementsPopulator = () => {
+    setIsLoadingVisible(!isLoadingVisible);
+    setisElementsDisabled(!isElementsDisabled);
+  };
+
+  const sendAPICalls = async (
+    castedOwnerObj,
+    castedServiceObj,
+    castedVehicleObj
+  ) => {
+    elementsPopulator();
+
+    let signupReturn = await signup(castedOwnerObj);
+
+    if (signupReturn.status === 201) {
+      var loginReturn = await login({
+        email: owner.email,
+        password: owner.password,
+      });
+      setOwner(loginReturn.data);
+
+      if (loginReturn.status === 201) {
+        castedVehicleObj.ownerID = loginReturn.data._id;
+        var vehicleReturn = await createVehicle(castedVehicleObj);
+        setVehicle(vehicleReturn.data);
+
+        castedServiceObj.vehicleID = vehicleReturn.data._id;
+        var serviceReturn = await createService(castedServiceObj);
+        setService(serviceReturn.data);
+
+        setTimeout(() => {
+          elementsPopulator();
+          props.navigation.navigate("Home");
+        }, 2000);
+      } else {
+        ToastAndroid.show("Unexpected error occured", ToastAndroid.SHORT);
+        setTimeout(() => {
+          BackHandler.exitApp();
+        }, 3000);
+      }
+    } else {
+      ToastAndroid.show("Unexpected error occured", ToastAndroid.SHORT);
+      setTimeout(() => {
+        BackHandler.exitApp();
+      }, 3000);
     }
   };
 
@@ -138,6 +222,7 @@ export default function AddServicesInfoComponent(props) {
                     value={values.mileage}
                     errorMessage={touched.mileage && errors.mileage}
                     keyboardType="numeric"
+                    disabled={isElementsDisabled}
                   />
                 ) : (
                   <Input
@@ -149,6 +234,7 @@ export default function AddServicesInfoComponent(props) {
                     value={values.workingHours}
                     errorMessage={touched.workingHours && errors.workingHours}
                     keyboardType="numeric"
+                    disabled={isElementsDisabled}
                   />
                 )}
               </View>
@@ -165,6 +251,7 @@ export default function AddServicesInfoComponent(props) {
                       touched.lastServiceMileage && errors.lastServiceMileage
                     }
                     keyboardType="numeric"
+                    disabled={isElementsDisabled}
                   />
                 ) : (
                   <Input
@@ -178,6 +265,7 @@ export default function AddServicesInfoComponent(props) {
                       touched.lastServiceHours && errors.lastServiceHours
                     }
                     keyboardType="numeric"
+                    disabled={isElementsDisabled}
                   />
                 )}
               </View>
@@ -206,8 +294,11 @@ export default function AddServicesInfoComponent(props) {
                 <TouchableOpacity
                   onPress={showDatepicker}
                   style={styles.dateButton}
+                  disabled={isElementsDisabled}
                 >
-                  <Text style={styles.dateText}>{date}</Text>
+                  <Text style={styles.dateText} isabled={isElementsDisabled}>
+                    {date}
+                  </Text>
                 </TouchableOpacity>
                 {dateError === true && (
                   <Text style={styles.dateError}>
@@ -221,7 +312,7 @@ export default function AddServicesInfoComponent(props) {
                   value={new Date()}
                   mode="date"
                   display="default"
-                  onChange={onChange}
+                  onChange={onDateChange}
                 />
               )}
 
@@ -230,7 +321,6 @@ export default function AddServicesInfoComponent(props) {
                   type="clear"
                   onPress={() => {
                     goBack();
-                    // handleSubmit
                   }}
                   title="Back"
                   titleStyle={[
@@ -242,15 +332,21 @@ export default function AddServicesInfoComponent(props) {
                           : Colors.completedColor,
                     },
                   ]}
-                  // disabled={backwardBtnDisabled}
+                  disabled={isElementsDisabled}
                 />
                 <Button
                   type="clear"
                   onPress={handleSubmit}
                   title="Submit"
                   titleStyle={styles.btnText}
+                  disabled={isElementsDisabled}
                 />
               </View>
+              <ActivityIndicator
+                animating={isLoadingVisible}
+                size="large"
+                color="#00ff00"
+              />
             </ScrollView>
           )}
         </Formik>
@@ -304,8 +400,5 @@ const styles = StyleSheet.create({
     paddingLeft: "4%",
     fontSize: responsiveFontSize(1.66),
     color: "red",
-  },
-  sss: {
-    // fontWeight:"bold"
   },
 });
