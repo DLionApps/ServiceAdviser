@@ -25,11 +25,13 @@ const login = async (credentials) => {
       });
 
     if (ret.status === 201) {
+      await AsyncStorage.removeItem("auth-token");
+      await AsyncStorage.removeItem("ownerID");
       await AsyncStorage.setItem("auth-token", ret.token);
       await AsyncStorage.setItem("ownerID", ret.data._id);
     } else {
-      await AsyncStorage.setItem("auth-token", undefined);
-      await AsyncStorage.setItem("ownerID", undefined);
+      await AsyncStorage.removeItem("auth-token");
+      await AsyncStorage.removeItem("ownerID");
     }
 
     return ret;
