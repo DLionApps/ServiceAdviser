@@ -20,10 +20,16 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Colors } from "../StaticFiles/BasicStyles";
 import { OwnerValidationSchema } from "../Constents/ValidationScheemas";
 import { OwnerContext } from "../Contexts/OwnerContext";
+import { VehicleContext } from "../Contexts/VehicleContext";
+import { ServiceContext } from "../Contexts/ServiceContext";
 
 export default function AddOwnsersInfoComponent(props) {
   const { ownerState } = useContext(OwnerContext);
   const [owner, setOwner] = ownerState;
+  const { serviceState } = useContext(ServiceContext);
+  const [service, setService] = serviceState;
+  const { vehicleState } = useContext(VehicleContext);
+  const [vehicle, setVehicle] = vehicleState;
   const [forwardBtnDisabled, setForwardBtnDisabled] = useState(true);
   const [backwardBtnDisabled, setbackwrdBtnDisabled] = useState(true);
 
@@ -35,7 +41,11 @@ export default function AddOwnsersInfoComponent(props) {
   };
 
   const goBack = () => {
-    props.goThroughStepsFunc(false);
+    // props.goThroughStepsFunc(false);
+    setVehicle(undefined);
+    setOwner(undefined);
+    setService(undefined);
+    props.navigation.navigate("Login");
   };
 
   return (
@@ -134,7 +144,7 @@ export default function AddOwnsersInfoComponent(props) {
                 <Button
                   type="clear"
                   onPress={() => {
-                    // goBack();
+                    goBack();
                   }}
                   title="Back"
                   titleStyle={[
@@ -146,7 +156,7 @@ export default function AddOwnsersInfoComponent(props) {
                           : Colors.completedColor,
                     },
                   ]}
-                  disabled={backwardBtnDisabled}
+                  // disabled={backwardBtnDisabled}
                 />
                 <Button
                   type="clear"
