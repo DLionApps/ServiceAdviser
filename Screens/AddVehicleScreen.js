@@ -51,7 +51,10 @@ export default function AddVehicleScreen({ navigation }) {
         />
       </View>
       {currentStep === 1 && (
-        <AddOwnsersInfoComponent goThroughStepsFunc={goThroughSteps} />
+        <AddOwnsersInfoComponent
+          goThroughStepsFunc={goThroughSteps}
+          navigation={navigation}
+        />
       )}
       {currentStep === 2 && (
         <AddVehicleInformationComponent
