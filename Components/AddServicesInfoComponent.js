@@ -296,7 +296,7 @@ export default function AddServicesInfoComponent(props) {
                   style={styles.dateButton}
                   disabled={isElementsDisabled}
                 >
-                  <Text style={styles.dateText} isabled={isElementsDisabled}>
+                  <Text style={styles.dateText} disabled={isElementsDisabled}>
                     {date}
                   </Text>
                 </TouchableOpacity>
