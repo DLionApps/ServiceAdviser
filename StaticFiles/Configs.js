@@ -1,4 +1,4 @@
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const getToken = async () => {
   try {
@@ -15,12 +15,20 @@ const herokuHostedUrl = "https://service-adviser-express.herokuapp.com";
 
 var apiBaseUrl = herokuHostedUrl;
 
-const headers = async () => {
-  return {
-    headers: {
-      "Content-Type": "application/json",
-      "auth-token": await getToken(),
-    },
-  };
+const headers = async (isWithToken) => {
+  if (isWithToken === true) {
+    return {
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": await getToken(),
+      },
+    };
+  } else {
+    return {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+  }
 };
 export { apiBaseUrl, headers };

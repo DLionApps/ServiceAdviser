@@ -9,6 +9,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import AddVehicleScreen from "./Screens/AddVehicleScreen";
 import HomeScreen from "./Screens/HomeScreen";
 import LoginScreen from "./Screens/LoginScreen";
+import ResetPasswordScreen from "./Screens/ResetPasswordScreen";
 
 import { OwnerProvider } from "./Contexts/OwnerContext";
 import { VehicleProvider } from "./Contexts/VehicleContext";
@@ -69,6 +70,11 @@ const App = () => {
                   options={{ headerShown: false }}
                   name="Login"
                   component={LoginScreen}
+                />
+                <Stack.Screen
+                  options={{ headerShown: false }}
+                  name="ResetPassword"
+                  component={ResetPasswordScreen}
                 />
                 <Stack.Screen
                   options={{ headerShown: false }}

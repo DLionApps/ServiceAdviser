@@ -130,6 +130,15 @@ const LoginScreen = ({ navigation }) => {
                   titleStyle={styles.signupBtnText}
                   disabled={isLoadingVisible}
                 />
+                <Button
+                  type="clear"
+                  onPress={() => {
+                    navigation.navigate("ResetPassword");
+                  }}
+                  title="Password Reset"
+                  titleStyle={styles.signupBtnText}
+                  disabled={isLoadingVisible}
+                />
               </View>
               <ActivityIndicator
                 animating={isLoadingVisible}

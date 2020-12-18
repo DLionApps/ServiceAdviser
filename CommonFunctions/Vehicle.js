@@ -7,7 +7,7 @@ const createVehicle = async (vehicleObj) => {
       .post(
         apiBaseUrl + "/api/vehicle",
         JSON.stringify(vehicleObj),
-        await headers()
+        await headers(true)
       )
       .then((response) => {
         return { status: response.status, data: response.data };

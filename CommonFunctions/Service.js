@@ -8,7 +8,7 @@ const createService = async (serviceObj) => {
       .post(
         apiBaseUrl + "/api/service",
         JSON.stringify(serviceObj),
-        await headers()
+        await headers(true)
       )
       .then((response) => {
         return { status: response.status, data: response.data };

@@ -7,6 +7,28 @@ const LoginSchema = Yup.object().shape({
     .required("Email is required"),
 });
 
+const EmailValidationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Valid email required")
+    .required("Email is required"),
+});
+
+const PasswordMatchSchema = Yup.object().shape({
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Password is too short - should be 8 chars minimum")
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+    ),
+  confirmPassword: Yup.string()
+    .required("Confirme password is required")
+    .oneOf(
+      [Yup.ref("password"), null],
+      "Confirm passwords must match with password"
+    ),
+});
+
 const SignupSchema = Yup.object().shape({
   password: Yup.string()
     .required("Password is required")
@@ -100,4 +122,6 @@ export {
   VehicleValidationSchema,
   MileageServiceValidationSchema,
   HourServiceValidationSchema,
+  PasswordMatchSchema,
+  EmailValidationSchema,
 };

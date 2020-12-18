@@ -1,4 +1,4 @@
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 import { apiBaseUrl, headers } from "../StaticFiles/Configs";
 import axios from "axios";
 
@@ -8,7 +8,7 @@ const login = async (credentials) => {
       .post(
         apiBaseUrl + "/api/login",
         JSON.stringify(credentials),
-        await headers()
+        await headers(false)
       )
       .then((response) => {
         return {
@@ -46,7 +46,7 @@ const signup = async (ownerObj) => {
       .post(
         apiBaseUrl + "/api/owner",
         JSON.stringify(ownerObj),
-        await headers()
+        await headers(false)
       )
       .then((response) => {
         return { status: response.status, data: response.data };
@@ -63,4 +63,47 @@ const signup = async (ownerObj) => {
     console.log(ex);
   }
 };
-export { login, signup };
+
+const checkEmail = async (email) => {
+  try {
+    const ret = await axios
+      .get(apiBaseUrl + `/api/CheckEmail/${email}`, await headers(false))
+      .then((response) => {
+        return { status: response.status, data: response.data };
+      })
+      .catch((error) => {
+        return {
+          messege: error.response.data.message,
+          status: error.response.status,
+        };
+      });
+
+    return ret;
+  } catch (ex) {
+    console.log(ex);
+  }
+};
+
+const resetPassword = async (email, password) => {
+  try {
+    const ret = await axios
+      .put(
+        apiBaseUrl + `/api/resetPasword/${email}`,
+        JSON.stringify(password),
+        await headers(false)
+      )
+      .then((response) => {
+        return { status: response.status, data: response.data };
+      })
+      .catch((error) => {
+        return {
+          messege: error.response.data.message,
+          status: error.response.status,
+        };
+      });
+    return ret;
+  } catch (ex) {
+    console.log(ex);
+  }
+};
+export { login, signup, checkEmail, resetPassword };
