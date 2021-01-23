@@ -124,7 +124,7 @@ const LoginScreen = ({ navigation }) => {
                 <Button
                   type="clear"
                   onPress={() => {
-                    navigation.navigate("AddVehicle");
+                    navigation.navigate("SignupStepper");
                   }}
                   title="Create an Account"
                   titleStyle={styles.signupBtnText}

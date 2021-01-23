@@ -21,11 +21,9 @@ import QuickActionsComponents from "../Components/QuickActionsComponents";
 import HomeScreenMainContainer from "../Components/HomeScreenMainContainer";
 
 const HomeScreen = ({ navigation }) => {
-  const [navigationObj, setNavigationObj] = useState(navigation);
-
   return (
     <View style={styles.container}>
-      <HomeScreenMainContainer />
+      <HomeScreenMainContainer navigation={navigation} />
       <QuickActionsComponents navigation={navigation} />
     </View>
   );

@@ -1,18 +1,22 @@
 import React from "react";
 import { StyleSheet, View, Dimensions } from "react-native";
 import { Button } from "react-native-elements";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {
   responsiveWidth,
   responsiveFontSize,
   responsiveHeight,
 } from "react-native-responsive-dimensions";
+// import { Icon } from "react-native-elements";
 
 const QuickActionsComponents = ({ navigation }) => {
   const navigateToUI = (selectedAction) => {
     switch (selectedAction) {
       case "service":
         navigation.navigate("Service");
+        break;
+      case "vehicle":
+        // code block
         break;
       case "":
         // code block
@@ -31,7 +35,18 @@ const QuickActionsComponents = ({ navigation }) => {
         onPress={() => {
           navigateToUI("service");
         }}
-        buttonStyle={styles.buttonStyle}
+        buttonStyle={[styles.buttonStyle, { backgroundColor: "blue" }]}
+      />
+      <Button
+        icon={
+          <Icon name="car-side" size={responsiveFontSize(4.5)} color="#fff" />
+        }
+        titleStyle={styles.signupBtnText}
+        containerStyle={styles.serviceButonContainer}
+        onPress={() => {
+          navigateToUI("vehicle");
+        }}
+        buttonStyle={[styles.buttonStyle, { backgroundColor: "red" }]}
       />
     </View>
   );
@@ -51,15 +66,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonStyle: {
-    backgroundColor: "blue",
     height: "100%",
   },
   container: {
-    // backgroundColor: "red",
+    // backgroundColor: "black",
     width: "20%",
     height: "100%",
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
   },
 });
 

@@ -6,7 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import AddVehicleScreen from "./Screens/AddVehicleScreen";
+import SignupStepperScreen from "./Screens/SignupStepperScreen";
 import HomeScreen from "./Screens/HomeScreen";
 import LoginScreen from "./Screens/LoginScreen";
 import ResetPasswordScreen from "./Screens/ResetPasswordScreen";
@@ -64,8 +64,8 @@ const App = () => {
               <Stack.Navigator initialRouteName={initialRoute}>
                 <Stack.Screen
                   options={{ headerShown: false }}
-                  name="AddVehicle"
-                  component={AddVehicleScreen}
+                  name="SignupStepper"
+                  component={SignupStepperScreen}
                 />
                 <Stack.Screen
                   options={{ headerShown: false }}

@@ -18,11 +18,11 @@ import {
   responsiveHeight,
 } from "react-native-responsive-dimensions";
 
-const HomeScreenMainContainer = () => {
+const HomeScreenMainContainer = ({ navigation }) => {
   const logoutUser = async () => {
     await AsyncStorage.removeItem("auth-token");
     await AsyncStorage.removeItem("ownerID");
-    navigationObj.navigate("Login");
+    navigation.navigate("Login");
   };
 
   return (
