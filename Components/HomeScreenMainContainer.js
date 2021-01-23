@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -17,16 +17,31 @@ import {
   responsiveFontSize,
   responsiveHeight,
 } from "react-native-responsive-dimensions";
-import QuickActionsComponents from "../Components/QuickActionsComponents";
-import HomeScreenMainContainer from "../Components/HomeScreenMainContainer";
 
-const HomeScreen = ({ navigation }) => {
-  const [navigationObj, setNavigationObj] = useState(navigation);
+const HomeScreenMainContainer = () => {
+  const logoutUser = async () => {
+    await AsyncStorage.removeItem("auth-token");
+    await AsyncStorage.removeItem("ownerID");
+    navigationObj.navigate("Login");
+  };
 
   return (
-    <View style={styles.container}>
-      <HomeScreenMainContainer />
-      <QuickActionsComponents navigation={navigation} />
+    <View
+      style={{
+        width: "80%",
+        height: "100%",
+        justifyContent: "flex-start",
+      }}
+    >
+      <Text>HOME</Text>
+      <Button
+        type="clear"
+        onPress={() => {
+          logoutUser();
+        }}
+        title="Logout"
+        titleStyle={styles.signupBtnText}
+      />
     </View>
   );
 };
@@ -35,11 +50,6 @@ const styles = StyleSheet.create({
   signupBtnText: {
     fontSize: responsiveFontSize(2.5),
   },
-  container: {
-    flex: 1,
-    flexDirection: "row",
-    paddingTop: StatusBar.currentHeight,
-  },
 });
 
-export default HomeScreen;
+export default HomeScreenMainContainer;

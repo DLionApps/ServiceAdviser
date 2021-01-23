@@ -10,6 +10,7 @@ import AddVehicleScreen from "./Screens/AddVehicleScreen";
 import HomeScreen from "./Screens/HomeScreen";
 import LoginScreen from "./Screens/LoginScreen";
 import ResetPasswordScreen from "./Screens/ResetPasswordScreen";
+import AddServiceScreen from "./Screens/AddServiceScreen";
 
 import { OwnerProvider } from "./Contexts/OwnerContext";
 import { VehicleProvider } from "./Contexts/VehicleContext";
@@ -80,6 +81,11 @@ const App = () => {
                   options={{ headerShown: false }}
                   name="Home"
                   component={HomeScreen}
+                />
+                <Stack.Screen
+                  options={{ headerShown: true }}
+                  name="Service"
+                  component={AddServiceScreen}
                 />
               </Stack.Navigator>
             </NavigationContainer>

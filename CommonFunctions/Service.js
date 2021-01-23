@@ -26,4 +26,27 @@ const createService = async (serviceObj) => {
   }
 };
 
-export { createService };
+const getServiceBulletins = async (applicableType) => {
+  try {
+    const ret = await axios
+      .get(
+        apiBaseUrl + `/api/serviceBulletin/${applicableType}`,
+        await headers(true)
+      )
+      .then((response) => {
+        return { status: response.status, data: response.data };
+      })
+      .catch((error) => {
+        return {
+          messege: error.response.data.message,
+          status: error.response.status,
+        };
+      });
+
+    return ret;
+  } catch (x) {
+    console.log(x);
+  }
+};
+
+export { createService, getServiceBulletins };

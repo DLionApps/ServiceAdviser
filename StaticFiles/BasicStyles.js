@@ -27,4 +27,8 @@ const CustomTexts = {
   fontWeight: "bold",
 };
 
-export { screenHeading, StepperStyles, Colors, CustomTexts };
+const ButtonStyles = {
+  backgroundColor: "rgb(32, 189, 55)",
+};
+
+export { screenHeading, StepperStyles, Colors, CustomTexts, ButtonStyles };

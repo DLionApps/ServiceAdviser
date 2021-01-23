@@ -114,6 +114,20 @@ const HourServiceValidationSchema = Yup.object().shape({
     .required("Recent Oil & Manintenence Service Hours is required"),
 });
 
+const HourServiceValidationSchemaTwo = Yup.object().shape({
+  serviceHour: Yup.number()
+    .positive()
+    .integer()
+    .required("Service Working Hour is required"),
+});
+
+const MileageServiceValidationSchemaTwo = Yup.object().shape({
+  serviceMileage: Yup.number()
+    .positive()
+    .integer()
+    .required("Service Mileage is required"),
+});
+
 //https://itnext.io/simple-react-form-validation-with-formik-yup-and-or-spected-206ebe9e7dcc
 export {
   LoginSchema,
@@ -124,4 +138,6 @@ export {
   HourServiceValidationSchema,
   PasswordMatchSchema,
   EmailValidationSchema,
+  HourServiceValidationSchemaTwo,
+  MileageServiceValidationSchemaTwo,
 };
