@@ -1,5 +1,5 @@
 import React from "react";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const stepperArray = [
   {
@@ -56,7 +56,9 @@ const vehiclePowerSources = [
 ];
 
 const vehicleTypeOne = () => <Icon name="car" size={24} color="gray" />;
-const vehicleTypeTwo = () => <Icon name="bus" size={24} color="gray" />;
+const vehicleTypeTwo = () => (
+  <Icon name="engine-outline" size={24} color="gray" />
+);
 // const vehicleTypeThree = () => <Icon name="ship" size={24} color="gray" />;
 
 const vehicleTypes = [

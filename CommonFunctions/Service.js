@@ -49,4 +49,28 @@ const getServiceBulletins = async (applicableType) => {
   }
 };
 
-export { createService, getServiceBulletins };
+const editService = async (serviceObj, serviceID) => {
+  try {
+    const ret = await axios
+      .put(
+        apiBaseUrl + `/api/service/${serviceID}`,
+        JSON.stringify(serviceObj),
+        await headers(true)
+      )
+      .then((response) => {
+        return { status: response.status, data: response.data };
+      })
+      .catch((error) => {
+        return {
+          messege: error.response.data.message,
+          status: error.response.status,
+        };
+      });
+
+    return ret;
+  } catch (x) {
+    console.log(x);
+  }
+};
+
+export { createService, getServiceBulletins, editService };

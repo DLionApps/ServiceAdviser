@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StatusBar,
+  ToastAndroid,
 } from "react-native";
 import { Button, Input, Text, ButtonGroup } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -22,6 +23,8 @@ import {
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import { VehicleValidationSchema } from "../Constents/ValidationScheemas";
 import { VehicleContext } from "../Contexts/VehicleContext";
+import { createVehicle } from "../CommonFunctions/Vehicle";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default function AddVehicleInformationComponent(props) {
   const { vehicleState } = useContext(VehicleContext);
@@ -49,14 +52,31 @@ export default function AddVehicleInformationComponent(props) {
     setFuelType(item);
   };
 
-  const storeVehicleInfo = (values) => {
+  const storeVehicleInfo = async (values) => {
     if (fuelType.length !== 0) {
       if (Object.keys(values).length !== 0) {
         values.fuelType = fuelType;
         values.vehicleType = vehicleType;
-        setVehicle(values);
 
-        props.goThroughStepsFunc(true);
+        if (props.isFromSignup === true) {
+          setVehicle(values);
+          props.goThroughStepsFunc(true);
+        } else {
+          let ownerID = await AsyncStorage.getItem("ownerID");
+          values.ownerID = ownerID;
+          let vehicleRet = await createVehicle(values);
+          if (vehicleRet.status === 201) {
+            ToastAndroid.show("Vehicle saved successfully", ToastAndroid.LONG);
+            setTimeout(() => {
+              props.navigation.goBack();
+            }, 1500);
+          } else {
+            ToastAndroid.show("Unexpected error occured", ToastAndroid.SHORT);
+            setTimeout(() => {
+              props.navigation.goBack();
+            }, 1500);
+          }
+        }
       }
     } else {
       setVehicleFuelTypeError(true);
@@ -64,7 +84,9 @@ export default function AddVehicleInformationComponent(props) {
   };
 
   useEffect(() => {
-    props.setVehicleType(vehicleType);
+    if (props.isFromSignup == true) {
+      props.setVehicleType(vehicleType);
+    }
   }, [vehicleType]);
 
   return (
@@ -204,24 +226,27 @@ export default function AddVehicleInformationComponent(props) {
                 )}
               </View>
               <View style={styles.btnContainer}>
-                <Button
-                  type="clear"
-                  onPress={() => {
-                    goBack();
-                    // handleSubmit
-                  }}
-                  title="Back"
-                  titleStyle={[
-                    styles.btnText,
-                    {
-                      color:
-                        backwardBtnDisabled === true
-                          ? Colors.incompletedColor
-                          : Colors.completedColor,
-                    },
-                  ]}
-                  // disabled={backwardBtnDisabled}
-                />
+                {props.isFromSignup === true && (
+                  <Button
+                    type="clear"
+                    onPress={() => {
+                      goBack();
+                      // handleSubmit
+                    }}
+                    title="Back"
+                    titleStyle={[
+                      styles.btnText,
+                      {
+                        color:
+                          backwardBtnDisabled === true
+                            ? Colors.incompletedColor
+                            : Colors.completedColor,
+                      },
+                    ]}
+                    // disabled={backwardBtnDisabled}
+                  />
+                )}
+
                 <Button
                   type="clear"
                   onPress={handleSubmit}

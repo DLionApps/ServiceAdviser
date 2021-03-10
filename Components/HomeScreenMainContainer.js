@@ -28,8 +28,6 @@ const HomeScreenMainContainer = ({ navigation }) => {
   return (
     <View
       style={{
-        width: "80%",
-        height: "100%",
         justifyContent: "flex-start",
       }}
     >

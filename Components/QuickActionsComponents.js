@@ -7,7 +7,10 @@ import {
   responsiveFontSize,
   responsiveHeight,
 } from "react-native-responsive-dimensions";
-// import { Icon } from "react-native-elements";
+// import { FloatingAction } from "react-native-floating-action";
+
+// import Icon from "react-native-vector-icons/Ionicons";
+// import ActionButton from "react-native-action-button";
 
 const QuickActionsComponents = ({ navigation }) => {
   const navigateToUI = (selectedAction) => {
@@ -15,7 +18,8 @@ const QuickActionsComponents = ({ navigation }) => {
       case "service":
         navigation.navigate("Service");
         break;
-      case "vehicle":
+      case "Vehicle":
+        navigation.navigate("Vehicle");
         // code block
         break;
       case "":
@@ -24,9 +28,28 @@ const QuickActionsComponents = ({ navigation }) => {
     }
   };
 
+  const actions = [
+    {
+      text: "Add Vehicle",
+      name: "addVehicle",
+      icon: <Icon name="plus" size={responsiveFontSize(4.5)} color="#fff" />,
+      position: 1,
+    },
+    {
+      text: "Edit Vehcle",
+      icon: (
+        <Icon name="pencil-plus" size={responsiveFontSize(4.5)} color="#fff" />
+      ),
+      name: "editVehicle",
+      position: "right",
+      margin: 8,
+      size: 60,
+    },
+  ];
+
   return (
     <View style={styles.container}>
-      <Button
+      {/* <Button
         icon={
           <Icon name="wrench" size={responsiveFontSize(4.5)} color="#fff" />
         }
@@ -44,10 +67,39 @@ const QuickActionsComponents = ({ navigation }) => {
         titleStyle={styles.signupBtnText}
         containerStyle={styles.serviceButonContainer}
         onPress={() => {
-          navigateToUI("vehicle");
+          navigateToUI("Vehicle");
         }}
         buttonStyle={[styles.buttonStyle, { backgroundColor: "red" }]}
-      />
+      /> */}
+      {/* <FloatingAction
+        actions={actions}
+        onPressItem={(name) => {
+          console.log(`selected button: ${name}`);
+        }}
+        floatingIcon={
+          <Icon name="car-side" size={responsiveFontSize(4.5)} color="#fff" />
+        }
+        showBackground={false}
+        color="red"
+        actionsPaddingTopBottom={1}
+        distanceToEdge={{
+          vertical: responsiveHeight(-500),
+          horizontal: responsiveWidth(2),
+        }}
+      /> */}
+      {/* <FloatingAction
+        actions={actions}
+        onPressItem={(name) => {
+          console.log(`selected button: ${name}`);
+        }}
+        floatingIcon={
+          <Icon name="car-side" size={responsiveFontSize(4.5)} color="#fff" />
+        }
+        showBackground={false}
+        color="red"
+        actionsPaddingTopBottom={1}
+        // distanceToEdge={{ horizontal: responsiveWidth(2) }}
+      /> */}
     </View>
   );
 };
@@ -69,11 +121,13 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   container: {
-    // backgroundColor: "black",
+    backgroundColor: "black",
     width: "20%",
     height: "100%",
-    flexDirection: "column",
-    justifyContent: "space-evenly",
+    // flexDirection: "column",
+    // justifyContent: "space-evenly",
+    // alignContent: "center",
+    // alignItems: "flex-end",
   },
 });
 

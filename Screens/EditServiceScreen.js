@@ -14,10 +14,9 @@ import {
   responsiveFontSize,
   responsiveHeight,
 } from "react-native-responsive-dimensions";
-import { getVehiclesFromAPI } from "../StaticFiles/GetObjectsFromAPI";
+import { getServiceFromAPIByID } from "../StaticFiles/GetObjectsFromAPI";
 import { CustomTexts, ButtonStyles } from "../StaticFiles/BasicStyles";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import DropDownPicker from "react-native-dropdown-picker";
 import { monthNames } from "../StaticFiles/staticData";
 import ServiceBulletinRow from "../Components/ServiceBulletinRow";
 import { Formik } from "formik";
@@ -25,8 +24,7 @@ import {
   HourServiceValidationSchemaTwo,
   MileageServiceValidationSchemaTwo,
 } from "../Constents/ValidationScheemas";
-import { createService, getServiceBulletins } from "../CommonFunctions/Service";
-import AsyncStorage from "@react-native-community/async-storage";
+import { editService } from "../CommonFunctions/Service";
 
 const formatDate = (date) => {
   return (
@@ -38,31 +36,19 @@ const formatDate = (date) => {
   );
 };
 
-const AddServiceScreen = (props) => {
+const EditServiceScreen = (props) => {
+  const { serviceId, vehicle } = props.route.params;
   const [bulletinList, setBulletinList] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState({ type: 0 });
-  const [vehicles, setVehicles] = useState([]);
   const [show, setShow] = useState(false);
   const [dateError, setDateError] = useState(false);
   const [date, setDate] = useState(formatDate(new Date()));
   const [isLoadingVisible, setIsLoadingVisible] = useState(false);
-
-  const getVehicles = async () => {
-    let ownerID = await AsyncStorage.getItem("ownerID");
-    var vehiclesArray = await getVehiclesFromAPI(ownerID);
-
-    const tempArray = [];
-
-    vehiclesArray.data.forEach((element) => {
-      let vehicleObj = {
-        label: element.VRN + " " + element.nickName,
-        value: element._id,
-        type: element.vehicleType,
-      };
-      tempArray.push(vehicleObj);
-    });
-    setVehicles(tempArray);
-  };
+  const [service, setService] = useState({
+    serviceDate: "",
+    serviceMileage: "",
+    serviiceRemarks: "",
+  });
 
   const onDateChange = (event, selectedDate) => {
     let currentDate =
@@ -80,10 +66,10 @@ const AddServiceScreen = (props) => {
 
   const saveServiceInfo = async (values) => {
     setIsLoadingVisible(true);
-
+    var ret;
     let serviceObj = {};
     serviceObj.serviceBulletins = bulletinList;
-    serviceObj.vehicleID = selectedVehicle.value;
+    serviceObj.vehicleID = vehicle.value;
     serviceObj.serviceDate = date;
 
     if (selectedVehicle.type === 0) {
@@ -93,10 +79,10 @@ const AddServiceScreen = (props) => {
     }
 
     serviceObj.serviiceRemarks = values.serviiceRemarks;
-    var ret = await createService(serviceObj);
+    serviceObj._id = serviceId;
+    ret = await editService(serviceObj, serviceObj._id);
 
     setIsLoadingVisible(false);
-
     if (ret.status === 201 || ret.status === 200) {
       ToastAndroid.show("Service saved successfully", ToastAndroid.LONG);
       setTimeout(() => {
@@ -127,30 +113,25 @@ const AddServiceScreen = (props) => {
     setBulletinList(tempBulletinList);
   };
 
-  const selectVehicle = async (vehicle) => {
+  const getServiceById = async (id) => {
+    let ret = await getServiceFromAPIByID(id);
+    setDate(ret.data.serviceDate);
+    setService(ret.data);
+    setBulletinList(ret.data.serviceBulletins);
     setSelectedVehicle(vehicle);
-    var ret = await getServiceBulletins(vehicle.type);
-    let tempBulletinList = [];
-    ret.data.forEach((x) => {
-      tempBulletinList = [
-        ...tempBulletinList,
-        { title: x.title, key: x._id, isChecked: false },
-      ];
-    });
-    setBulletinList(tempBulletinList);
   };
 
   useEffect(() => {
-    getVehicles();
-  }, []);
+    getServiceById(serviceId);
+  }, [serviceId]);
 
   return (
     <View style={styles.container}>
       <Formik
         initialValues={{
-          serviceMileage: "",
-          serviceHour: "",
-          serviiceRemarks: "",
+          serviceMileage: service.serviceMileage.toString(),
+          serviceHour: service.serviceDate.toString(),
+          serviiceRemarks: service.serviiceRemarks,
         }}
         validationSchema={
           selectedVehicle.type === 0
@@ -185,29 +166,7 @@ const AddServiceScreen = (props) => {
                 containerStyle={{
                   width: "47%",
                 }}
-                disabled={selectedVehicle.value === undefined ? true : false}
               />
-            </View>
-            <View style={{ flexDirection: "row", paddingTop: "5%" }}>
-              <View style={styles.rowLeftColumn}>
-                <Text style={[CustomTexts, { paddingLeft: "10%" }]}>
-                  Vehicle
-                </Text>
-              </View>
-              <View style={{ width: "50%" }}>
-                <DropDownPicker
-                  items={vehicles}
-                  containerStyle={{
-                    paddingRight: "10%",
-                    height: responsiveHeight(6),
-                    width: responsiveWidth(50),
-                  }}
-                  dropDownStyle={{ backgroundColor: "#fafafa" }}
-                  onChangeItem={(item) => {
-                    selectVehicle(item);
-                  }}
-                />
-              </View>
             </View>
             <View style={{ flexDirection: "row", paddingTop: "5%" }}>
               <View style={styles.rowLeftColumn}>
@@ -333,4 +292,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddServiceScreen;
+export default EditServiceScreen;

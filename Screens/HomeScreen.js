@@ -17,14 +17,14 @@ import {
   responsiveFontSize,
   responsiveHeight,
 } from "react-native-responsive-dimensions";
-import QuickActionsComponents from "../Components/QuickActionsComponents";
+// import QuickActionsComponents from "../Components/QuickActionsComponents";
 import HomeScreenMainContainer from "../Components/HomeScreenMainContainer";
 
 const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <HomeScreenMainContainer navigation={navigation} />
-      <QuickActionsComponents navigation={navigation} />
+      {/* <QuickActionsComponents navigation={navigation} /> */}
     </View>
   );
 };

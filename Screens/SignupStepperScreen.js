@@ -60,6 +60,7 @@ export default function AddVehicleScreen({ navigation }) {
         <AddVehicleInformationComponent
           goThroughStepsFunc={goThroughSteps}
           setVehicleType={selectVehicleType}
+          isFromSignup={true}
         />
       )}
       {currentStep === 3 && (
