@@ -6,6 +6,40 @@ import {
 
 const screenHeading = {
   fontSize: responsiveFontSize(4),
+  fontFamily: "monospace",
+  fontWeight: "bold",
+  paddingBottom: "5%",
+};
+
+const screenDescription = {
+  fontSize: responsiveFontSize(2),
+  fontFamily: "Roboto",
+  color: "#68B2A0",
+};
+
+const textBoxStyles = {
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: "#68B2A0",
+};
+
+const submitButtonStyles = {
+  containerStyle: {
+    borderRadius: 12,
+    backgroundColor: "#7BE495",
+    width: "70%",
+  },
+  titleStyle: {
+    fontSize: responsiveFontSize(2.5),
+    color: "#FFFFFF",
+  },
+  linkButtonTitle: {
+    fontSize: responsiveFontSize(2.5),
+    color: "#68B2A0",
+  },
+  linkButtonContainerStyle: {
+    borderRadius: 22,
+  },
 };
 
 const StepperStyles = {
@@ -31,4 +65,13 @@ const ButtonStyles = {
   backgroundColor: "rgb(32, 189, 55)",
 };
 
-export { screenHeading, StepperStyles, Colors, CustomTexts, ButtonStyles };
+export {
+  screenHeading,
+  StepperStyles,
+  Colors,
+  CustomTexts,
+  ButtonStyles,
+  screenDescription,
+  textBoxStyles,
+  submitButtonStyles,
+};

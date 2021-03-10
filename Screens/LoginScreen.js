@@ -7,16 +7,18 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StatusBar,
-  TouchableOpacity,
   ActivityIndicator,
-  ToastAndroid,
-  BackHandler,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Button, Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Formik } from "formik";
-import { Colors, CustomTexts } from "../StaticFiles/BasicStyles";
+import {
+  screenHeading,
+  screenDescription,
+  textBoxStyles,
+  submitButtonStyles,
+} from "../StaticFiles/BasicStyles";
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -82,30 +84,65 @@ const LoginScreen = ({ navigation }) => {
               style={styles.wrapperContainer}
               contentContainerStyle={styles.wrapperContainerStyles}
             >
+              <View
+                style={{
+                  alignItems: "center",
+                  paddingBottom: "10%",
+                }}
+              >
+                <Text style={screenHeading}>Login</Text>
+                <Text style={screenDescription}>
+                  Enter your login details to
+                </Text>
+                <Text style={screenDescription}>access your account</Text>
+              </View>
               <View style={styles.container}>
                 <Input
-                  label="Email"
-                  containerStyle={styles.textBoxStyles}
+                  containerStyle={{ width: "90%" }}
+                  inputContainerStyle={textBoxStyles}
                   leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   value={values.email}
                   errorMessage={touched.email && errors.email}
                   disabled={isLoadingVisible}
+                  placeholder="Email"
                 />
               </View>
               <View style={styles.container}>
                 <Input
-                  label="Password"
-                  containerStyle={styles.textBoxStyles}
+                  containerStyle={{ width: "90%" }}
+                  inputContainerStyle={textBoxStyles}
                   leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   value={values.password}
                   errorMessage={touched.password && errors.password}
                   disabled={isLoadingVisible}
+                  placeholder="Password"
+                  secureTextEntry={true}
                 />
               </View>
+              <View style={{ alignItems: "center" }}>
+                <View
+                  style={{
+                    width: "80%",
+                    alignItems: "flex-end",
+                  }}
+                >
+                  <Button
+                    type="clear"
+                    onPress={() => {
+                      navigation.navigate("ResetPassword");
+                    }}
+                    title="Forgot password?"
+                    titleStyle={submitButtonStyles.linkButtonTitle}
+                    containerStyle={submitButtonStyles.linkButtonContainerStyle}
+                    disabled={isLoadingVisible}
+                  />
+                </View>
+              </View>
+
               <View style={styles.btnContainer}>
                 {loginError !== undefined && (
                   <Text style={styles.dateError}>{loginError}</Text>
@@ -115,35 +152,41 @@ const LoginScreen = ({ navigation }) => {
                 <Button
                   type="outline"
                   onPress={handleSubmit}
-                  title="Login With Email"
-                  titleStyle={styles.btnText}
+                  title="Login"
+                  titleStyle={submitButtonStyles.titleStyle}
                   disabled={isLoadingVisible}
+                  containerStyle={submitButtonStyles.containerStyle}
                 />
               </View>
-              <View>
-                <Button
-                  type="clear"
-                  onPress={() => {
-                    navigation.navigate("SignupStepper");
+              <View
+                style={{
+                  paddingTop: "25%",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
-                  title="Create an Account"
-                  titleStyle={styles.signupBtnText}
-                  disabled={isLoadingVisible}
-                />
-                <Button
-                  type="clear"
-                  onPress={() => {
-                    navigation.navigate("ResetPassword");
-                  }}
-                  title="Password Reset"
-                  titleStyle={styles.signupBtnText}
-                  disabled={isLoadingVisible}
-                />
+                >
+                  <Text style={screenDescription}>Need an account</Text>
+                  <Button
+                    type="clear"
+                    onPress={() => {
+                      navigation.navigate("SignupStepper");
+                    }}
+                    title="Sign up here"
+                    titleStyle={submitButtonStyles.linkButtonTitle}
+                    containerStyle={submitButtonStyles.linkButtonContainerStyle}
+                    disabled={isLoadingVisible}
+                  />
+                </View>
               </View>
               <ActivityIndicator
                 animating={isLoadingVisible}
                 size="large"
-                color="#00ff00"
+                color="#7BE495"
               />
             </ScrollView>
           )}
@@ -166,20 +209,12 @@ const styles = StyleSheet.create({
   },
   container: {
     width: "100%",
-  },
-  btnText: {
-    fontSize: responsiveFontSize(3.5),
-    color: Colors.completedColor,
-  },
-  signupBtnText: {
-    fontSize: responsiveFontSize(2.5),
-    textDecorationLine: "underline",
+    alignItems: "center",
   },
   btnContainer: {
     paddingTop: "5%",
     width: "100%",
-    justifyContent: "space-around",
-    flexDirection: "row",
+    alignItems: "center",
   },
   dateError: {
     fontSize: responsiveFontSize(2.5),
