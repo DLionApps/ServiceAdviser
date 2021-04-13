@@ -4,17 +4,17 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 const stepperArray = [
   {
     number: 1,
-    text1: "Add Owner's",
+    text1: "Owner's",
     text2: "Information",
   },
   {
     number: 2,
-    text1: "Add Vehicle",
+    text1: "Vehicle",
     text2: "Information",
   },
   {
     number: 3,
-    text1: "Add Service",
+    text1: "Service",
     text2: "Information",
   },
 ];
@@ -55,9 +55,9 @@ const vehiclePowerSources = [
   // },
 ];
 
-const vehicleTypeOne = () => <Icon name="car" size={24} color="gray" />;
+const vehicleTypeOne = () => <Icon name="car" size={24} color="#6D6D6D" />;
 const vehicleTypeTwo = () => (
-  <Icon name="engine-outline" size={24} color="gray" />
+  <Icon name="engine-outline" size={24} color="#6D6D6D" />
 );
 // const vehicleTypeThree = () => <Icon name="ship" size={24} color="gray" />;
 
