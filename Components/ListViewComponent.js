@@ -6,7 +6,6 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  StatusBar,
 } from "react-native";
 import { Button, Input, Text } from "react-native-elements";
 import AsyncStorage from "@react-native-community/async-storage";

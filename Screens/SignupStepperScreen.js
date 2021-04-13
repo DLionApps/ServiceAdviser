@@ -1,26 +1,14 @@
-// import { StatusBar } from "expo-status-bar";
-import React, { useState, useRef, forwardRef } from "react";
-import {
-  StyleSheet,
-  View,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
-  StatusBar,
-} from "react-native";
-import { Button, Input, Text } from "react-native-elements";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { Formik } from "formik";
-import { ScrollView } from "react-native-gesture-handler";
-import DropDownPicker from "react-native-dropdown-picker";
-import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { Text } from "react-native-elements";
 import { screenHeading } from "../StaticFiles/BasicStyles";
 import AddOwnsersInfoComponent from "../Components/AddOwnsersInfoComponent";
 import AddVehicleInformationComponent from "../Components/AddVehicleInformationComponent";
-import AddServicesInfoComponent from "../Components/AddServicesInfoComponent";
+// import AddServicesInfoComponent from "../Components/AddServicesInfoComponent";
+import TempServiceInfo from "../Components/TempServiceInfo";
 import Stepper from "../Components/Stepper";
 import { stepperArray } from "../StaticFiles/staticData";
+import { getStatusBarHeight } from "react-native-status-bar-height";
 
 export default function AddVehicleScreen({ navigation }) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -64,7 +52,12 @@ export default function AddVehicleScreen({ navigation }) {
         />
       )}
       {currentStep === 3 && (
-        <AddServicesInfoComponent
+        // <AddServicesInfoComponent
+        //   goThroughStepsFunc={goThroughSteps}
+        //   selectedVehicleTypeIndex={selectedVehicleType}
+        //   navigation={navigation}
+        // />
+        <TempServiceInfo
           goThroughStepsFunc={goThroughSteps}
           selectedVehicleTypeIndex={selectedVehicleType}
           navigation={navigation}
@@ -79,7 +72,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: StatusBar.currentHeight + 10,
+    paddingTop: getStatusBarHeight() + 10,
   },
   stepperWrapper: {
     width: "100%",

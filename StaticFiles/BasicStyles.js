@@ -4,22 +4,24 @@ import {
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
 
+import { Platform } from "react-native";
+
 const screenHeading = {
   fontSize: responsiveFontSize(4),
-  fontFamily: "monospace",
+  fontFamily: Platform.OS === "ios" ? "System" : "monospace",
   fontWeight: "bold",
   paddingBottom: "5%",
 };
 
 const screenDescription = {
   fontSize: responsiveFontSize(2),
-  fontFamily: "Roboto",
+  fontFamily: Platform.OS === "ios" ? "System" : "Roboto",
   color: "#68B2A0",
 };
 
 const textBoxStyles = {
   borderRadius: 12,
-  borderWidth: 1,
+  borderWidth: responsiveWidth(0.3),
   borderColor: "#68B2A0",
 };
 
@@ -51,7 +53,7 @@ const StepperStyles = {
 
 const Colors = {
   incompletedColor: "rgb(214, 214, 214)",
-  completedColor: "rgb(32, 189, 55)",
+  completedColor: "#7BE495",
   // completedTextColor: "rgb(0, 0, 0)",
 };
 

@@ -6,7 +6,6 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  StatusBar,
   ToastAndroid,
   ActivityIndicator,
 } from "react-native";
@@ -262,7 +261,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    // paddingTop: StatusBar.currentHeight + 10,
   },
   container: {
     flexDirection: "row",

@@ -6,7 +6,6 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  StatusBar,
   ActivityIndicator,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -27,6 +26,7 @@ import {
 import { LoginSchema } from "../Constents/ValidationScheemas";
 import { login } from "../CommonFunctions/Auth";
 import { OwnerContext } from "../Contexts/OwnerContext";
+import { getStatusBarHeight } from "react-native-status-bar-height";
 
 const LoginScreen = ({ navigation }) => {
   const [isLoadingVisible, setIsLoadingVisible] = useState(false);
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   wrapperContainer: {
     backgroundColor: "#fff",
     height: "100%",
-    paddingTop: StatusBar.currentHeight + 10,
+    paddingTop: getStatusBarHeight() + 10,
   },
   wrapperContainerStyles: {
     flex: 1,

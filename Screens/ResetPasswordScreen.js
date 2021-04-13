@@ -6,7 +6,6 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  StatusBar,
   TouchableOpacity,
   ActivityIndicator,
   ToastAndroid,
@@ -16,7 +15,13 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Button, Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Formik } from "formik";
-import { Colors, CustomTexts } from "../StaticFiles/BasicStyles";
+import {
+  screenHeading,
+  screenDescription,
+  textBoxStyles,
+  submitButtonStyles,
+  Colors,
+} from "../StaticFiles/BasicStyles";
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -28,6 +33,7 @@ import {
 } from "../Constents/ValidationScheemas";
 import { checkEmail, resetPassword } from "../CommonFunctions/Auth";
 import { OwnerContext } from "../Contexts/OwnerContext";
+import { getStatusBarHeight } from "react-native-status-bar-height";
 
 const ResetPasswordScreen = ({ navigation }) => {
   const [isLoadingVisible, setIsLoadingVisible] = useState(false);
@@ -101,24 +107,48 @@ const ResetPasswordScreen = ({ navigation }) => {
               style={styles.wrapperContainer}
               contentContainerStyle={styles.wrapperContainerStyles}
             >
+              <View
+                style={{
+                  alignItems: "center",
+                  paddingBottom: "10%",
+                }}
+              >
+                <Text style={screenHeading}>Reset password</Text>
+                <Text style={screenDescription}>Enter your email to</Text>
+                <Text style={screenDescription}>reset the password</Text>
+              </View>
               {isEmailSubmited !== true && (
+                // <View style={styles.container}>
+                //   <Input
+                //     label="Email"
+                //     containerStyle={styles.textBoxStyles}
+                //     leftIcon={<Icon name="envelope" size={18} color="#fff" />}
+                //     onChangeText={handleChange("email")}
+                //     onBlur={handleBlur("email")}
+                //     value={values.email}
+                //     errorMessage={touched.email && errors.email}
+                //     disabled={isLoadingVisible}
+                //   />
+                // </View>
+
                 <View style={styles.container}>
                   <Input
-                    label="Email"
-                    containerStyle={styles.textBoxStyles}
+                    containerStyle={{ width: "90%" }}
+                    inputContainerStyle={textBoxStyles}
                     leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                     onChangeText={handleChange("email")}
                     onBlur={handleBlur("email")}
                     value={values.email}
                     errorMessage={touched.email && errors.email}
                     disabled={isLoadingVisible}
+                    placeholder="Email"
                   />
                 </View>
               )}
 
               {isEmailSubmited === true && (
                 <>
-                  <View style={styles.container}>
+                  {/* <View style={styles.container}>
                     <Input
                       label="Password"
                       containerStyle={styles.textBoxStyles}
@@ -129,8 +159,24 @@ const ResetPasswordScreen = ({ navigation }) => {
                       errorMessage={touched.password && errors.password}
                       disabled={isLoadingVisible}
                     />
-                  </View>
+                  </View> */}
+
                   <View style={styles.container}>
+                    <Input
+                      containerStyle={{ width: "90%" }}
+                      inputContainerStyle={textBoxStyles}
+                      leftIcon={<Icon name="envelope" size={18} color="#fff" />}
+                      onChangeText={handleChange("password")}
+                      onBlur={handleBlur("password")}
+                      value={values.password}
+                      errorMessage={touched.password && errors.password}
+                      disabled={isLoadingVisible}
+                      placeholder="Password"
+                      secureTextEntry={true}
+                    />
+                  </View>
+
+                  {/* <View style={styles.container}>
                     <Input
                       label="Confirm Password"
                       containerStyle={styles.textBoxStyles}
@@ -143,6 +189,23 @@ const ResetPasswordScreen = ({ navigation }) => {
                       }
                       disabled={isLoadingVisible}
                     />
+                  </View> */}
+
+                  <View style={styles.container}>
+                    <Input
+                      containerStyle={{ width: "90%" }}
+                      inputContainerStyle={textBoxStyles}
+                      leftIcon={<Icon name="envelope" size={18} color="#fff" />}
+                      onChangeText={handleChange("confirmPassword")}
+                      onBlur={handleBlur("confirmPassword")}
+                      value={values.confirmPassword}
+                      errorMessage={
+                        touched.confirmPassword && errors.confirmPassword
+                      }
+                      disabled={isLoadingVisible}
+                      placeholder="Confirm Password"
+                      secureTextEntry={true}
+                    />
                   </View>
                 </>
               )}
@@ -154,20 +217,27 @@ const ResetPasswordScreen = ({ navigation }) => {
               </View>
               <View style={styles.btnContainer}>
                 <Button
-                  type="clear"
+                  type="outline"
+                  onPress={handleSubmit}
+                  title="Submit"
+                  titleStyle={submitButtonStyles.titleStyle}
+                  disabled={isLoadingVisible}
+                  containerStyle={submitButtonStyles.containerStyle}
+                />
+              </View>
+              <View style={styles.btnContainer}>
+                <Button
+                  type="outline"
                   onPress={() => {
                     navigation.navigate("Login");
                   }}
                   title="Back"
-                  titleStyle={styles.btnText}
+                  titleStyle={submitButtonStyles.titleStyle}
                   disabled={isLoadingVisible}
-                />
-                <Button
-                  type="outline"
-                  onPress={handleSubmit}
-                  title="Submit"
-                  titleStyle={styles.btnText}
-                  disabled={isLoadingVisible}
+                  containerStyle={[
+                    submitButtonStyles.containerStyle,
+                    { backgroundColor: "#6D6D6D" },
+                  ]}
                 />
               </View>
               <ActivityIndicator
@@ -187,7 +257,7 @@ const styles = StyleSheet.create({
   wrapperContainer: {
     backgroundColor: "#fff",
     height: "100%",
-    paddingTop: StatusBar.currentHeight + 10,
+    paddingTop: getStatusBarHeight() + 10,
   },
   wrapperContainerStyles: {
     flex: 1,
@@ -196,6 +266,7 @@ const styles = StyleSheet.create({
   },
   container: {
     width: "100%",
+    alignItems: "center",
   },
   btnText: {
     fontSize: responsiveFontSize(3.5),
@@ -208,8 +279,7 @@ const styles = StyleSheet.create({
   btnContainer: {
     paddingTop: "5%",
     width: "100%",
-    justifyContent: "space-around",
-    flexDirection: "row",
+    alignItems: "center",
   },
   dateError: {
     fontSize: responsiveFontSize(2.5),

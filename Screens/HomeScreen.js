@@ -6,7 +6,6 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  StatusBar,
 } from "react-native";
 import { Button, Input, Text } from "react-native-elements";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -19,6 +18,7 @@ import {
 } from "react-native-responsive-dimensions";
 // import QuickActionsComponents from "../Components/QuickActionsComponents";
 import HomeScreenMainContainer from "../Components/HomeScreenMainContainer";
+import { getStatusBarHeight } from "react-native-status-bar-height";
 
 const HomeScreen = ({ navigation }) => {
   return (
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
-    paddingTop: StatusBar.currentHeight,
+    paddingTop: getStatusBarHeight(),
   },
 });
 

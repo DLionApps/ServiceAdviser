@@ -1,4 +1,3 @@
-// import { StatusBar } from "expo-status-bar";
 import React, { useState, useContext } from "react";
 import {
   StyleSheet,
@@ -7,7 +6,6 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  StatusBar,
 } from "react-native";
 import {
   responsiveWidth,
@@ -17,7 +15,11 @@ import { Button, Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Formik } from "formik";
 import { ScrollView } from "react-native-gesture-handler";
-import { Colors } from "../StaticFiles/BasicStyles";
+import {
+  Colors,
+  textBoxStyles,
+  submitButtonStyles,
+} from "../StaticFiles/BasicStyles";
 import { OwnerValidationSchema } from "../Constents/ValidationScheemas";
 import { OwnerContext } from "../Contexts/OwnerContext";
 import { VehicleContext } from "../Contexts/VehicleContext";
@@ -63,7 +65,7 @@ export default function AddOwnsersInfoComponent(props) {
             password: owner === undefined ? "" : owner.password,
             confirmPassword: owner === undefined ? "" : owner.confirmPassword,
           }}
-          validationSchema={OwnerValidationSchema}
+          // validationSchema={OwnerValidationSchema}
           onSubmit={(values) => storeOwnerInfo(values)}
         >
           {({
@@ -77,9 +79,9 @@ export default function AddOwnsersInfoComponent(props) {
             <ScrollView contentContainerStyle={styles.wrapperContainer}>
               <View style={styles.container}>
                 <Input
-                  label="First Name"
-                  placeholder="John"
-                  containerStyle={styles.textBoxStyles}
+                  placeholder="First Name"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
                   leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                   onChangeText={handleChange("fName")}
                   onBlur={handleBlur("fName")}
@@ -87,10 +89,10 @@ export default function AddOwnsersInfoComponent(props) {
                   errorMessage={touched.fName && errors.fName}
                 />
                 <Input
-                  label="Last Name"
-                  placeholder="Richards"
-                  containerStyle={styles.textBoxStyles}
-                  leftIcon={<Icon name="lock" size={24} color="#fff" />}
+                  placeholder="Last Name"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
+                  leftIcon={<Icon name="lock" size={18} color="#fff" />}
                   onChangeText={handleChange("lName")}
                   onBlur={handleBlur("lName")}
                   value={values.lName}
@@ -99,18 +101,20 @@ export default function AddOwnsersInfoComponent(props) {
               </View>
               <View style={styles.container}>
                 <Input
-                  label="Email"
-                  containerStyle={styles.textBoxStyles}
+                  placeholder="Email"
+                  inputContainerStyle={textBoxStyles}
                   leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   value={values.email}
                   errorMessage={touched.email && errors.email}
                 />
+              </View>
+              <View style={styles.container}>
                 <Input
-                  label="Contact Number"
-                  containerStyle={styles.textBoxStyles}
-                  leftIcon={<Icon name="lock" size={24} color="#fff" />}
+                  placeholder="Contact Number"
+                  inputContainerStyle={textBoxStyles}
+                  leftIcon={<Icon name="lock" size={18} color="#fff" />}
                   onChangeText={handleChange("contactNumber")}
                   onBlur={handleBlur("contactNumber")}
                   value={values.contactNumber}
@@ -120,8 +124,9 @@ export default function AddOwnsersInfoComponent(props) {
               </View>
               <View style={styles.container}>
                 <Input
-                  label="Password"
-                  containerStyle={styles.textBoxStyles}
+                  placeholder="Password"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
                   leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
@@ -129,9 +134,10 @@ export default function AddOwnsersInfoComponent(props) {
                   errorMessage={touched.password && errors.password}
                 />
                 <Input
-                  label="Confirm Password"
-                  containerStyle={styles.textBoxStyles}
-                  leftIcon={<Icon name="lock" size={24} color="#fff" />}
+                  placeholder="Confirm Password"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
+                  leftIcon={<Icon name="lock" size={18} color="#fff" />}
                   onChangeText={handleChange("confirmPassword")}
                   onBlur={handleBlur("confirmPassword")}
                   value={values.confirmPassword}
@@ -140,29 +146,30 @@ export default function AddOwnsersInfoComponent(props) {
                   }
                 />
               </View>
+
               <View style={styles.btnContainer}>
                 <Button
-                  type="clear"
+                  type="outline"
                   onPress={() => {
                     goBack();
                   }}
                   title="Back"
-                  titleStyle={[
-                    styles.btnText,
-                    {
-                      color:
-                        backwardBtnDisabled === true
-                          ? Colors.incompletedColor
-                          : Colors.completedColor,
-                    },
+                  titleStyle={submitButtonStyles.titleStyle}
+                  containerStyle={[
+                    submitButtonStyles.containerStyle,
+                    { backgroundColor: "#6D6D6D", width: "40%" },
                   ]}
-                  // disabled={backwardBtnDisabled}
                 />
                 <Button
-                  type="clear"
+                  type="outline"
                   onPress={handleSubmit}
                   title="Next"
                   titleStyle={styles.btnText}
+                  titleStyle={submitButtonStyles.titleStyle}
+                  containerStyle={[
+                    submitButtonStyles.containerStyle,
+                    { width: "40%" },
+                  ]}
                 />
               </View>
             </ScrollView>
@@ -178,17 +185,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: StatusBar.currentHeight + 10,
+    paddingTop: "5%",
   },
   container: {
     flexDirection: "row",
   },
-  textBoxStyles: {
-    width: "50%",
-  },
   btnContainer: {
     paddingTop: "5%",
-    width: "80%",
+    width: "95%",
     justifyContent: "space-around",
     flexDirection: "row",
   },

@@ -6,7 +6,6 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  StatusBar,
   ToastAndroid,
   ActivityIndicator,
 } from "react-native";

@@ -1,4 +1,3 @@
-// import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
@@ -7,14 +6,24 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  StatusBar,
   ToastAndroid,
 } from "react-native";
-import { Button, Input, Text, ButtonGroup } from "react-native-elements";
+import {
+  Button,
+  Input,
+  Text,
+  ButtonGroup,
+  colors,
+} from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Formik } from "formik";
 import { ScrollView } from "react-native-gesture-handler";
-import { Colors } from "../StaticFiles/BasicStyles";
+import {
+  Colors,
+  textBoxStyles,
+  submitButtonStyles,
+  titleStyle,
+} from "../StaticFiles/BasicStyles";
 import { vehiclePowerSources, vehicleTypes } from "../StaticFiles/staticData";
 import {
   responsiveWidth,
@@ -53,34 +62,34 @@ export default function AddVehicleInformationComponent(props) {
   };
 
   const storeVehicleInfo = async (values) => {
-    if (fuelType.length !== 0) {
-      if (Object.keys(values).length !== 0) {
-        values.fuelType = fuelType;
-        values.vehicleType = vehicleType;
+    // if (fuelType.length !== 0) {
+    if (Object.keys(values).length !== 0) {
+      values.fuelType = fuelType;
+      values.vehicleType = vehicleType;
 
-        if (props.isFromSignup === true) {
-          setVehicle(values);
-          props.goThroughStepsFunc(true);
+      if (props.isFromSignup === true) {
+        setVehicle(values);
+        props.goThroughStepsFunc(true);
+      } else {
+        let ownerID = await AsyncStorage.getItem("ownerID");
+        values.ownerID = ownerID;
+        let vehicleRet = await createVehicle(values);
+        if (vehicleRet.status === 201) {
+          ToastAndroid.show("Vehicle saved successfully", ToastAndroid.LONG);
+          setTimeout(() => {
+            props.navigation.goBack();
+          }, 1500);
         } else {
-          let ownerID = await AsyncStorage.getItem("ownerID");
-          values.ownerID = ownerID;
-          let vehicleRet = await createVehicle(values);
-          if (vehicleRet.status === 201) {
-            ToastAndroid.show("Vehicle saved successfully", ToastAndroid.LONG);
-            setTimeout(() => {
-              props.navigation.goBack();
-            }, 1500);
-          } else {
-            ToastAndroid.show("Unexpected error occured", ToastAndroid.SHORT);
-            setTimeout(() => {
-              props.navigation.goBack();
-            }, 1500);
-          }
+          ToastAndroid.show("Unexpected error occured", ToastAndroid.SHORT);
+          setTimeout(() => {
+            props.navigation.goBack();
+          }, 1500);
         }
       }
-    } else {
-      setVehicleFuelTypeError(true);
     }
+    // } else {
+    //   setVehicleFuelTypeError(true);
+    // }
   };
 
   useEffect(() => {
@@ -103,7 +112,7 @@ export default function AddVehicleInformationComponent(props) {
             model: vehicle === undefined ? "" : vehicle.model,
             mfgYear: vehicle === undefined ? "" : vehicle.mfgYear,
           }}
-          validationSchema={VehicleValidationSchema}
+          // validationSchema={VehicleValidationSchema}
           onSubmit={(values) => storeVehicleInfo(values)}
         >
           {({
@@ -117,9 +126,9 @@ export default function AddVehicleInformationComponent(props) {
             <ScrollView contentContainerStyle={styles.wrapperContainer}>
               <View style={styles.container}>
                 <Input
-                  label="Registration Number"
-                  placeholder="AA-0000"
-                  containerStyle={styles.textBoxStyles}
+                  placeholder="Vehicle Number"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
                   leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                   onChangeText={handleChange("VRN")}
                   onBlur={handleBlur("VRN")}
@@ -127,9 +136,9 @@ export default function AddVehicleInformationComponent(props) {
                   errorMessage={touched.VRN && errors.VRN}
                 />
                 <Input
-                  label="Nick Name"
-                  placeholder="Nitro"
-                  containerStyle={styles.textBoxStyles}
+                  placeholder="Nick Name"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
                   leftIcon={<Icon name="lock" size={24} color="#fff" />}
                   onChangeText={handleChange("nickName")}
                   onBlur={handleBlur("nickName")}
@@ -139,8 +148,9 @@ export default function AddVehicleInformationComponent(props) {
               </View>
               <View style={styles.container}>
                 <Input
-                  label="Make"
-                  containerStyle={styles.textBoxStyles}
+                  placeholder="Make"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
                   leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                   onChangeText={handleChange("make")}
                   onBlur={handleBlur("make")}
@@ -148,9 +158,10 @@ export default function AddVehicleInformationComponent(props) {
                   errorMessage={touched.make && errors.make}
                 />
                 <Input
-                  label="Model"
-                  containerStyle={styles.textBoxStyles}
-                  leftIcon={<Icon name="lock" size={24} color="#fff" />}
+                  placeholder="Model"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
+                  leftIcon={<Icon name="lock" size={18} color="#fff" />}
                   onChangeText={handleChange("model")}
                   onBlur={handleBlur("model")}
                   value={values.model}
@@ -159,9 +170,10 @@ export default function AddVehicleInformationComponent(props) {
               </View>
               <View style={[styles.container, { width: "100%" }]}>
                 <Input
-                  label="Manufactured Year"
-                  containerStyle={styles.textBoxStyles}
-                  leftIcon={<Icon name="lock" size={24} color="#fff" />}
+                  placeholder="Manufactured Year"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
+                  leftIcon={<Icon name="lock" size={18} color="#fff" />}
                   onChangeText={handleChange("mfgYear")}
                   onBlur={handleBlur("mfgYear")}
                   keyboardType="numeric"
@@ -179,11 +191,12 @@ export default function AddVehicleInformationComponent(props) {
                   onPress={(e) => setVehicleType(e)}
                   selectedIndex={vehicleType}
                   buttons={vehicleTypes}
-                  containerStyle={{
-                    width: "100%",
-                    borderWidth: responsiveWidth(0.2),
-                    borderColor: "gray",
-                  }}
+                  containerStyle={[
+                    textBoxStyles,
+                    {
+                      width: "100%",
+                    },
+                  ]}
                   selectedButtonStyle={{
                     backgroundColor: Colors.completedColor,
                   }}
@@ -192,20 +205,21 @@ export default function AddVehicleInformationComponent(props) {
               <View style={{ width: "100%", paddingTop: "6%" }}>
                 <SectionedMultiSelect
                   styles={{
-                    selectToggle: {
-                      borderColor: "gray",
-                      borderWidth: responsiveWidth(0.2),
-                      width: "96%",
-                      alignSelf: "center",
-                    },
+                    selectToggleText: { paddingLeft: "5%" },
+                    selectToggle: [
+                      textBoxStyles,
+                      {
+                        width: "96%",
+                        alignSelf: "center",
+                      },
+                    ],
                     chipsWrapper: {
-                      // alignContent: "center",
                       width: "96%",
                       alignSelf: "center",
                     },
-                    chipContainer: {
-                      backgroundColor: Colors.completedColor,
-                    },
+                    chipContainer: { borderColor: "white" },
+                    chipText: titleStyle,
+
                     button: {
                       backgroundColor: Colors.completedColor,
                     },
@@ -228,30 +242,29 @@ export default function AddVehicleInformationComponent(props) {
               <View style={styles.btnContainer}>
                 {props.isFromSignup === true && (
                   <Button
-                    type="clear"
+                    type="outline"
                     onPress={() => {
                       goBack();
-                      // handleSubmit
                     }}
                     title="Back"
-                    titleStyle={[
-                      styles.btnText,
-                      {
-                        color:
-                          backwardBtnDisabled === true
-                            ? Colors.incompletedColor
-                            : Colors.completedColor,
-                      },
+                    titleStyle={submitButtonStyles.titleStyle}
+                    containerStyle={[
+                      submitButtonStyles.containerStyle,
+                      { backgroundColor: "#6D6D6D", width: "40%" },
                     ]}
-                    // disabled={backwardBtnDisabled}
                   />
                 )}
 
                 <Button
-                  type="clear"
+                  type="outline"
                   onPress={handleSubmit}
                   title="Next"
                   titleStyle={styles.btnText}
+                  titleStyle={submitButtonStyles.titleStyle}
+                  containerStyle={[
+                    submitButtonStyles.containerStyle,
+                    { width: "40%" },
+                  ]}
                 />
               </View>
             </ScrollView>
@@ -267,13 +280,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: StatusBar.currentHeight + 10,
+    paddingTop: "5%",
   },
   container: {
     flexDirection: "row",
-  },
-  textBoxStyles: {
-    width: "50%",
   },
   btnText: {
     fontSize: responsiveFontSize(3.5),
@@ -281,7 +291,7 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     paddingTop: "5%",
-    width: "80%",
+    width: "95%",
     justifyContent: "space-around",
     flexDirection: "row",
   },

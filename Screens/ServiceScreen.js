@@ -136,7 +136,6 @@ const styles = StyleSheet.create({
     flex: 1,
     // backgroundColor: "blue",
     // flexDirection: "row",
-    // paddingTop: StatusBar.currentHeight,
   },
 });
 
