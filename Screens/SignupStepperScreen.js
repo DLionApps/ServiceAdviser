@@ -4,8 +4,7 @@ import { Text } from "react-native-elements";
 import { screenHeading } from "../StaticFiles/BasicStyles";
 import AddOwnsersInfoComponent from "../Components/AddOwnsersInfoComponent";
 import AddVehicleInformationComponent from "../Components/AddVehicleInformationComponent";
-// import AddServicesInfoComponent from "../Components/AddServicesInfoComponent";
-import TempServiceInfo from "../Components/TempServiceInfo";
+import AddServicesInfoComponent from "../Components/AddServicesInfoComponent";
 import Stepper from "../Components/Stepper";
 import { stepperArray } from "../StaticFiles/staticData";
 import { getStatusBarHeight } from "react-native-status-bar-height";
@@ -52,12 +51,7 @@ export default function AddVehicleScreen({ navigation }) {
         />
       )}
       {currentStep === 3 && (
-        // <AddServicesInfoComponent
-        //   goThroughStepsFunc={goThroughSteps}
-        //   selectedVehicleTypeIndex={selectedVehicleType}
-        //   navigation={navigation}
-        // />
-        <TempServiceInfo
+        <AddServicesInfoComponent
           goThroughStepsFunc={goThroughSteps}
           selectedVehicleTypeIndex={selectedVehicleType}
           navigation={navigation}

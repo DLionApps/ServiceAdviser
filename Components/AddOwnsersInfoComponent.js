@@ -65,7 +65,7 @@ export default function AddOwnsersInfoComponent(props) {
             password: owner === undefined ? "" : owner.password,
             confirmPassword: owner === undefined ? "" : owner.confirmPassword,
           }}
-          // validationSchema={OwnerValidationSchema}
+          validationSchema={OwnerValidationSchema}
           onSubmit={(values) => storeOwnerInfo(values)}
         >
           {({

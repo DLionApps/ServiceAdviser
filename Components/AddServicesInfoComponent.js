@@ -6,17 +6,22 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  StatusBar,
   TouchableOpacity,
   ActivityIndicator,
   ToastAndroid,
   BackHandler,
+  Pressable,
 } from "react-native";
 import { Button, Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Formik } from "formik";
 import { ScrollView } from "react-native-gesture-handler";
-import { Colors, CustomTexts } from "../StaticFiles/BasicStyles";
+import {
+  Colors,
+  CustomTexts,
+  textBoxStyles,
+  submitButtonStyles,
+} from "../StaticFiles/BasicStyles";
 import { monthNames } from "../StaticFiles/staticData";
 import {
   responsiveWidth,
@@ -214,8 +219,8 @@ export default function AddServicesInfoComponent(props) {
               <View style={styles.container}>
                 {selectedVehicleType === 0 ? (
                   <Input
-                    label="Total Mileage"
-                    containerStyle={styles.textBoxStyles}
+                    placeholder="Total Mileage"
+                    inputContainerStyle={textBoxStyles}
                     leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                     onChangeText={handleChange("mileage")}
                     onBlur={handleBlur("mileage")}
@@ -226,9 +231,9 @@ export default function AddServicesInfoComponent(props) {
                   />
                 ) : (
                   <Input
-                    label="Total Working Hours"
-                    containerStyle={styles.textBoxStyles}
-                    leftIcon={<Icon name="lock" size={24} color="#fff" />}
+                    placeholder="Total Working Hours"
+                    inputContainerStyle={textBoxStyles}
+                    leftIcon={<Icon name="lock" size={18} color="#fff" />}
                     onChangeText={handleChange("workingHours")}
                     onBlur={handleBlur("workingHours")}
                     value={values.workingHours}
@@ -241,8 +246,8 @@ export default function AddServicesInfoComponent(props) {
               <View style={styles.container}>
                 {selectedVehicleType === 0 ? (
                   <Input
-                    label="Recent Oil & Manintenence Service Mileage"
-                    containerStyle={styles.textBoxStyles}
+                    placeholder="Recent Oil & Manintenence Service Mileage"
+                    inputContainerStyle={textBoxStyles}
                     leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                     onChangeText={handleChange("lastServiceMileage")}
                     onBlur={handleBlur("lastServiceMileage")}
@@ -255,8 +260,8 @@ export default function AddServicesInfoComponent(props) {
                   />
                 ) : (
                   <Input
-                    label="Recent Oil & Manintenence Service Hours"
-                    containerStyle={styles.textBoxStyles}
+                    placeholder="Recent Oil & Manintenence Service Hours"
+                    inputContainerStyle={textBoxStyles}
                     leftIcon={<Icon name="lock" size={24} color="#fff" />}
                     onChangeText={handleChange("lastServiceHours")}
                     onBlur={handleBlur("lastServiceHours")}
@@ -269,37 +274,44 @@ export default function AddServicesInfoComponent(props) {
                   />
                 )}
               </View>
-              {/* <View style={styles.container}>
-                <Input
-                  label="Recent Oil & Manintenence Service Date"
-                  containerStyle={styles.textBoxStyles}
-                  leftIcon={<Icon name="envelope" size={18} color="#fff" />}
-                  onChangeText={handleChange("lastServiceDate")}
-                  onBlur={handleBlur("lastServiceDate")}
-                  value={values.lastServiceDate}
-                  errorMessage={
-                    touched.lastServiceDate && errors.lastServiceDate
-                  }
-                />
-              </View> */}
-
               <View
                 style={{
                   width: "100%",
                 }}
               >
-                <Text style={[CustomTexts, { paddingLeft: "3%" }]}>
-                  Recent Oil & Manintenence Service Date
-                </Text>
-                <TouchableOpacity
-                  onPress={showDatepicker}
-                  style={styles.dateButton}
-                  disabled={isElementsDisabled}
-                >
-                  <Text style={styles.dateText} disabled={isElementsDisabled}>
-                    {date}
-                  </Text>
-                </TouchableOpacity>
+                <View style={[{ justifyContent: "center" }, styles.container]}>
+                  <Button
+                    containerStyle={{
+                      backgroundColor: "white",
+                      borderRadius: 12,
+                      borderWidth: responsiveWidth(0.2),
+                      borderColor: "#68B2A0",
+                      width: "95%",
+                    }}
+                    title={
+                      date === undefined
+                        ? "Recent Oil & Manintenence Service Date"
+                        : date
+                    }
+                    type="clear"
+                    titleStyle={{
+                      color: date === undefined ? "#d0ced1" : "black",
+                      fontSize: responsiveFontSize(2.2),
+                    }}
+                    iconRight={true}
+                    icon={
+                      <Icon
+                        name="calendar-check-o"
+                        size={responsiveFontSize(2.5)}
+                        color="#d0ced1"
+                      />
+                    }
+                    buttonStyle={{
+                      justifyContent: "space-around",
+                    }}
+                    onPress={showDatepicker}
+                  />
+                </View>
                 {dateError === true && (
                   <Text style={styles.dateError}>
                     Recent Oil & Manintenence Service Date is required
@@ -311,34 +323,35 @@ export default function AddServicesInfoComponent(props) {
                   testID="dateTimePicker"
                   value={new Date()}
                   mode="date"
-                  display="default"
+                  display={Platform.OS === "ios" ? "spinner" : "default"}
                   onChange={onDateChange}
+                  style={{ width: 320, backgroundColor: "white" }}
                 />
               )}
 
               <View style={styles.btnContainer}>
                 <Button
-                  type="clear"
+                  type="outline"
                   onPress={() => {
                     goBack();
                   }}
                   title="Back"
-                  titleStyle={[
-                    styles.btnText,
-                    {
-                      color:
-                        backwardBtnDisabled === true
-                          ? Colors.incompletedColor
-                          : Colors.completedColor,
-                    },
+                  titleStyle={submitButtonStyles.titleStyle}
+                  containerStyle={[
+                    submitButtonStyles.containerStyle,
+                    { backgroundColor: "#6D6D6D", width: "40%" },
                   ]}
                   disabled={isElementsDisabled}
                 />
                 <Button
-                  type="clear"
+                  type="outline"
                   onPress={handleSubmit}
                   title="Submit"
-                  titleStyle={styles.btnText}
+                  titleStyle={submitButtonStyles.titleStyle}
+                  containerStyle={[
+                    submitButtonStyles.containerStyle,
+                    { width: "40%" },
+                  ]}
                   disabled={isElementsDisabled}
                 />
               </View>
@@ -360,14 +373,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: StatusBar.currentHeight + 10,
+    paddingTop: "5 %",
   },
   container: {
-    // flex: 1,
     flexDirection: "row",
-    width: "100%",
-    // alignItems: "center",
-    // justifyContent: "center",
   },
   textBoxStyles: {
     width: "100%",
@@ -378,7 +387,7 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     paddingTop: "5%",
-    width: "80%",
+    width: "95%",
     justifyContent: "space-around",
     flexDirection: "row",
   },

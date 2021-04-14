@@ -62,34 +62,34 @@ export default function AddVehicleInformationComponent(props) {
   };
 
   const storeVehicleInfo = async (values) => {
-    // if (fuelType.length !== 0) {
-    if (Object.keys(values).length !== 0) {
-      values.fuelType = fuelType;
-      values.vehicleType = vehicleType;
+    if (fuelType.length !== 0) {
+      if (Object.keys(values).length !== 0) {
+        values.fuelType = fuelType;
+        values.vehicleType = vehicleType;
 
-      if (props.isFromSignup === true) {
-        setVehicle(values);
-        props.goThroughStepsFunc(true);
-      } else {
-        let ownerID = await AsyncStorage.getItem("ownerID");
-        values.ownerID = ownerID;
-        let vehicleRet = await createVehicle(values);
-        if (vehicleRet.status === 201) {
-          ToastAndroid.show("Vehicle saved successfully", ToastAndroid.LONG);
-          setTimeout(() => {
-            props.navigation.goBack();
-          }, 1500);
+        if (props.isFromSignup === true) {
+          setVehicle(values);
+          props.goThroughStepsFunc(true);
         } else {
-          ToastAndroid.show("Unexpected error occured", ToastAndroid.SHORT);
-          setTimeout(() => {
-            props.navigation.goBack();
-          }, 1500);
+          let ownerID = await AsyncStorage.getItem("ownerID");
+          values.ownerID = ownerID;
+          let vehicleRet = await createVehicle(values);
+          if (vehicleRet.status === 201) {
+            ToastAndroid.show("Vehicle saved successfully", ToastAndroid.LONG);
+            setTimeout(() => {
+              props.navigation.goBack();
+            }, 1500);
+          } else {
+            ToastAndroid.show("Unexpected error occured", ToastAndroid.SHORT);
+            setTimeout(() => {
+              props.navigation.goBack();
+            }, 1500);
+          }
         }
       }
+    } else {
+      setVehicleFuelTypeError(true);
     }
-    // } else {
-    //   setVehicleFuelTypeError(true);
-    // }
   };
 
   useEffect(() => {
@@ -112,7 +112,7 @@ export default function AddVehicleInformationComponent(props) {
             model: vehicle === undefined ? "" : vehicle.model,
             mfgYear: vehicle === undefined ? "" : vehicle.mfgYear,
           }}
-          // validationSchema={VehicleValidationSchema}
+          validationSchema={VehicleValidationSchema}
           onSubmit={(values) => storeVehicleInfo(values)}
         >
           {({
