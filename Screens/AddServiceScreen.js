@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Platform,
-  TouchableOpacity,
   FlatList,
   ActivityIndicator,
   ToastAndroid,
@@ -15,9 +14,15 @@ import {
   responsiveHeight,
 } from "react-native-responsive-dimensions";
 import { getVehiclesFromAPI } from "../StaticFiles/GetObjectsFromAPI";
-import { CustomTexts, ButtonStyles } from "../StaticFiles/BasicStyles";
+import {
+  CustomTexts,
+  ButtonStyles,
+  textBoxStyles,
+  titleStyle,
+  Colors,
+  submitButtonStyles,
+} from "../StaticFiles/BasicStyles";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import DropDownPicker from "react-native-dropdown-picker";
 import { monthNames } from "../StaticFiles/staticData";
 import ServiceBulletinRow from "../Components/ServiceBulletinRow";
 import { Formik } from "formik";
@@ -27,6 +32,8 @@ import {
 } from "../Constents/ValidationScheemas";
 import { createService, getServiceBulletins } from "../CommonFunctions/Service";
 import AsyncStorage from "@react-native-community/async-storage";
+import Icon from "react-native-vector-icons/FontAwesome";
+import SectionedMultiSelect from "react-native-sectioned-multi-select";
 
 const formatDate = (date) => {
   return (
@@ -47,19 +54,21 @@ const AddServiceScreen = (props) => {
   const [date, setDate] = useState(formatDate(new Date()));
   const [isLoadingVisible, setIsLoadingVisible] = useState(false);
 
+  const [vehicleForDropdown, setVehicleForDropdown] = useState([]);
+
   const getVehicles = async () => {
+    const tempArray = [{ name: "Vehicles", id: 1, children: [] }];
+
     let ownerID = await AsyncStorage.getItem("ownerID");
     var vehiclesArray = await getVehiclesFromAPI(ownerID);
 
-    const tempArray = [];
-
     vehiclesArray.data.forEach((element) => {
       let vehicleObj = {
-        label: element.VRN + " " + element.nickName,
-        value: element._id,
+        name: element.VRN + " " + element.nickName,
+        id: element._id,
         type: element.vehicleType,
       };
-      tempArray.push(vehicleObj);
+      tempArray[0].children.push(vehicleObj);
     });
     setVehicles(tempArray);
   };
@@ -83,7 +92,7 @@ const AddServiceScreen = (props) => {
 
     let serviceObj = {};
     serviceObj.serviceBulletins = bulletinList;
-    serviceObj.vehicleID = selectedVehicle.value;
+    serviceObj.vehicleID = selectedVehicle.id;
     serviceObj.serviceDate = date;
 
     if (selectedVehicle.type === 0) {
@@ -128,8 +137,13 @@ const AddServiceScreen = (props) => {
   };
 
   const selectVehicle = async (vehicle) => {
-    setSelectedVehicle(vehicle);
-    var ret = await getServiceBulletins(vehicle.type);
+    setVehicleForDropdown(vehicle);
+    let selectedViehicle = vehicles[0].children.filter(
+      (x) => x.id == vehicle
+    )[0];
+
+    setSelectedVehicle(selectedViehicle);
+    var ret = await getServiceBulletins(selectedViehicle.type);
     let tempBulletinList = [];
     ret.data.forEach((x) => {
       tempBulletinList = [
@@ -171,80 +185,105 @@ const AddServiceScreen = (props) => {
           touched,
         }) => (
           <>
+            <View style={{ paddingBottom: "5%" }}></View>
             <View
               style={{
-                alignItems: "flex-end",
-                paddingTop: "5%",
-                paddingRight: "5%",
+                width: "100%",
+                alignItems: "center",
+                height: "12%",
+              }}
+            >
+              <SectionedMultiSelect
+                styles={{
+                  selectToggleText: { paddingLeft: "5%" },
+                  selectToggle: [
+                    textBoxStyles,
+                    {
+                      width: "96%",
+                      alignContent: "space-around",
+                      height: "84%",
+                      justifyContent: "center",
+                    },
+                  ],
+                  chipsWrapper: {
+                    width: "96%",
+                    alignSelf: "center",
+                  },
+                  chipContainer: { borderColor: "white" },
+                  chipText: titleStyle,
+
+                  button: {
+                    backgroundColor: Colors.completedColor,
+                  },
+                }}
+                items={vehicles}
+                uniqueKey="id"
+                subKey="children"
+                selectText="Select a Vehicle"
+                showDropDowns={true}
+                readOnlyHeadings={true}
+                onSelectedItemsChange={selectVehicle}
+                single={true}
+                selectedItems={vehicleForDropdown}
+              />
+            </View>
+            <View
+              style={{
+                alignItems: "center",
+                height: "12%",
               }}
             >
               <Button
-                title="Save"
-                type="outline"
-                onPress={handleSubmit}
                 containerStyle={{
-                  width: "47%",
+                  backgroundColor: "white",
+                  borderRadius: 12,
+                  borderWidth: responsiveWidth(0.3),
+                  borderColor: "#68B2A0",
+                  width: "95%",
+                  height: "70%",
+                  justifyContent: "center",
                 }}
-                disabled={selectedVehicle.value === undefined ? true : false}
+                title={
+                  date === undefined
+                    ? "Recent Oil & Manintenence Service Date"
+                    : date
+                }
+                type="clear"
+                titleStyle={{
+                  color: date === undefined ? "#d0ced1" : "black",
+                  fontSize: responsiveFontSize(2.2),
+                }}
+                iconRight={true}
+                icon={
+                  <Icon
+                    name="calendar-check-o"
+                    size={responsiveFontSize(2.5)}
+                    color="#d0ced1"
+                  />
+                }
+                buttonStyle={{
+                  justifyContent: "space-around",
+                }}
+                onPress={showDatepicker}
               />
-            </View>
-            <View style={{ flexDirection: "row", paddingTop: "5%" }}>
-              <View style={styles.rowLeftColumn}>
-                <Text style={[CustomTexts, { paddingLeft: "10%" }]}>
-                  Vehicle
-                </Text>
-              </View>
-              <View style={{ width: "50%" }}>
-                <DropDownPicker
-                  items={vehicles}
-                  containerStyle={{
-                    paddingRight: "10%",
-                    height: responsiveHeight(6),
-                    width: responsiveWidth(50),
-                  }}
-                  dropDownStyle={{ backgroundColor: "#fafafa" }}
-                  onChangeItem={(item) => {
-                    selectVehicle(item);
-                  }}
-                />
-              </View>
-            </View>
-            <View style={{ flexDirection: "row", paddingTop: "5%" }}>
-              <View style={styles.rowLeftColumn}>
-                <Text style={[CustomTexts, { paddingLeft: "10%" }]}>Date</Text>
-              </View>
-              <View style={{ width: "50%" }}>
-                <TouchableOpacity
-                  onPress={showDatepicker}
-                  style={{
-                    paddingRight: "10%",
-                    height: responsiveHeight(6),
-                    width: responsiveWidth(45),
-                    justifyContent: "center",
-                    backgroundColor: ButtonStyles.backgroundColor,
-                    borderRadius: 4,
-                  }}
-                >
-                  <Text style={styles.dateText}>{date}</Text>
-                </TouchableOpacity>
-              </View>
             </View>
             {show && (
               <DateTimePicker
                 testID="dateTimePicker"
                 value={new Date()}
                 mode="date"
-                display="default"
+                display={Platform.OS === "ios" ? "spinner" : "default"}
                 onChange={onDateChange}
+                style={{ width: 320, backgroundColor: "white" }}
               />
             )}
+
             <View style={styles.inputRow}>
               {selectedVehicle.type === 0 ? (
                 <Input
-                  label="Service Mileage"
-                  containerStyle={styles.textBoxStyles}
-                  labelStyle={[CustomTexts]}
-                  //   inputStyle={{ backgroundColor: "green" }}
+                  placeholder="Service Mileage"
+                  inputContainerStyle={textBoxStyles}
+                  leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                   onChangeText={handleChange("serviceMileage")}
                   onBlur={handleBlur("serviceMileage")}
                   value={values.serviceMileage}
@@ -253,10 +292,9 @@ const AddServiceScreen = (props) => {
                 />
               ) : (
                 <Input
-                  label="Service Hour"
-                  containerStyle={styles.textBoxStyles}
-                  labelStyle={[CustomTexts]}
-                  //   inputStyle={{ backgroundColor: "green" }}
+                  placeholder="Service Hour"
+                  inputContainerStyle={textBoxStyles}
+                  leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                   onChangeText={handleChange("serviceHour")}
                   onBlur={handleBlur("serviceHour")}
                   value={values.serviceHour}
@@ -267,22 +305,17 @@ const AddServiceScreen = (props) => {
             </View>
             <View style={styles.inputRow}>
               <Input
-                label="Service Remarks"
-                containerStyle={styles.textBoxStyles}
-                labelStyle={[CustomTexts]}
-                //   inputStyle={{ backgroundColor: "green" }}
+                placeholder="Service Remarks"
+                inputContainerStyle={textBoxStyles}
+                leftIcon={<Icon name="envelope" size={18} color="#fff" />}
                 onChangeText={handleChange("serviiceRemarks")}
                 onBlur={handleBlur("serviiceRemarks")}
                 value={values.serviiceRemarks}
                 errorMessage={touched.serviiceRemarks && errors.serviiceRemarks}
               />
             </View>
-            <ActivityIndicator
-              animating={isLoadingVisible}
-              size="large"
-              color="#00ff00"
-            />
             <FlatList
+              style={{ backgroundColor: "#eeeeee" }}
               data={bulletinList}
               renderItem={({ item }) => (
                 <ServiceBulletinRow
@@ -295,6 +328,40 @@ const AddServiceScreen = (props) => {
               extraData={bulletinList}
               keyExtractor={(item) => item.key.toString()}
             ></FlatList>
+            <ActivityIndicator
+              animating={isLoadingVisible}
+              size="large"
+              color="#00ff00"
+            />
+            <View style={styles.btnContainer}>
+              <Button
+                type="outline"
+                onPress={() => {
+                  props.navigation.navigate("Service", {
+                    reloadUI: true,
+                    vehicleID: vehicleForDropdown,
+                  });
+                }}
+                title="Cancel"
+                titleStyle={submitButtonStyles.titleStyle}
+                containerStyle={[
+                  submitButtonStyles.containerStyle,
+                  { backgroundColor: "#6D6D6D", width: "40%", height: "70%" },
+                ]}
+                disabled={isLoadingVisible}
+              />
+              <Button
+                type="outline"
+                onPress={handleSubmit}
+                title="Submit"
+                titleStyle={submitButtonStyles.titleStyle}
+                containerStyle={[
+                  submitButtonStyles.containerStyle,
+                  { width: "40%", height: "70%" },
+                ]}
+                disabled={isLoadingVisible}
+              />
+            </View>
           </>
         )}
       </Formik>
@@ -305,13 +372,11 @@ const AddServiceScreen = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
   },
   inputRow: {
-    flexDirection: "row",
-    paddingLeft: "2%",
-    paddingRight: "5%",
+    width: "100%",
     alignItems: "center",
-    paddingTop: "5%",
   },
   serviceBulletinsRow: {
     flexDirection: "row",
@@ -330,6 +395,12 @@ const styles = StyleSheet.create({
   rowLeftColumn: {
     width: "50%",
     justifyContent: "center",
+  },
+  btnContainer: {
+    justifyContent: "space-around",
+    alignItems: "center",
+    flexDirection: "row",
+    height: "10%",
   },
 });
 
