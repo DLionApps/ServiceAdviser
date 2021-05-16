@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, FlatList, SafeAreaView, View } from "react-native";
-import { Button, Input, Text } from "react-native-elements";
+import { StyleSheet, FlatList, View, Alert } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import {
   responsiveWidth,
@@ -9,12 +8,15 @@ import {
 } from "react-native-responsive-dimensions";
 import ListViewComponent from "../Components/ListViewComponent";
 import { FloatingAction } from "react-native-floating-action";
-import DropDownPicker from "react-native-dropdown-picker";
 import {
   getVehiclesFromAPI,
   getServicesFromAPI,
 } from "../StaticFiles/GetObjectsFromAPI";
 import { useIsFocused } from "@react-navigation/native";
+import { titleStyle, Colors, textBoxStyles } from "../StaticFiles/BasicStyles";
+import SectionedMultiSelect from "react-native-sectioned-multi-select";
+import { deleteService } from "../CommonFunctions/Service";
+import AlertComponent from "../Components/AlertComponent";
 
 const ServiceScreen = (props) => {
   const actions = [
@@ -28,6 +30,7 @@ const ServiceScreen = (props) => {
   const [vehicles, setVehicles] = useState([]);
   const [services, setServices] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState({});
+  const [vehicleForDropdown, setVehicleForDropdown] = useState([]);
 
   const isFocused = useIsFocused();
 
@@ -42,25 +45,20 @@ const ServiceScreen = (props) => {
   }, []);
 
   const getVehicles = async () => {
+    const tempArray = [{ name: "Vehicles", id: 1, children: [] }];
+
     let ownerID = await AsyncStorage.getItem("ownerID");
     var vehiclesArray = await getVehiclesFromAPI(ownerID);
 
-    const tempArray = [];
-
     vehiclesArray.data.forEach((element) => {
       let vehicleObj = {
-        label: element.VRN + " " + element.nickName,
-        value: element._id,
+        name: element.VRN + " " + element.nickName,
+        id: element._id,
         type: element.vehicleType,
       };
-      tempArray.push(vehicleObj);
+      tempArray[0].children.push(vehicleObj);
     });
     setVehicles(tempArray);
-  };
-
-  const getServices = async (vehicle) => {
-    setSelectedVehicle(vehicle);
-    setSelectedVehicleService(vehicle.value);
   };
 
   const setSelectedVehicleService = async (vehicle) => {
@@ -86,23 +84,93 @@ const ServiceScreen = (props) => {
     });
   };
 
+  const showDeleteConfirmation = (id) => {
+    Alert.alert(
+      "Delete service",
+      "Are you sure you want to delete this service record?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => {
+            deleteServiceObj(id);
+          },
+        },
+      ]
+    );
+  };
+
+  const deleteServiceObj = async (serviceID) => {
+    var ret = await deleteService(serviceID);
+
+    if (ret.status === 200) {
+      AlertComponent("Delete service", "Service deleted successfully");
+    } else {
+      AlertComponent("Delete service", "Unexpected error occured");
+    }
+    setSelectedVehicleService(selectedVehicle.id);
+  };
+
+  const selectVehicle = async (vehicle) => {
+    setVehicleForDropdown(vehicle);
+    let selectedViehicle = vehicles[0].children.filter(
+      (x) => x.id == vehicle
+    )[0];
+
+    setSelectedVehicle(selectedViehicle);
+    setSelectedVehicleService(selectedViehicle.id);
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={{ width: "50%", height: "15%" }}>
-        <DropDownPicker
+    <View style={styles.container}>
+      <View style={{ paddingBottom: "5%" }}></View>
+      <View
+        style={{
+          width: "100%",
+          alignItems: "center",
+          height: "12%",
+        }}
+      >
+        <SectionedMultiSelect
+          styles={{
+            selectToggleText: { paddingLeft: "5%" },
+            selectToggle: [
+              textBoxStyles,
+              {
+                width: "96%",
+                alignContent: "space-around",
+                height: "84%",
+                justifyContent: "center",
+              },
+            ],
+            chipsWrapper: {
+              width: "96%",
+              alignSelf: "center",
+            },
+            chipContainer: { borderColor: "white" },
+            chipText: titleStyle,
+
+            button: {
+              backgroundColor: Colors.completedColor,
+            },
+          }}
           items={vehicles}
-          containerStyle={{
-            // paddingRight: "10%",
-            height: responsiveHeight(6),
-            width: responsiveWidth(50),
-          }}
-          dropDownStyle={{ backgroundColor: "#fafafa", height: "100%" }}
-          onChangeItem={(item) => {
-            getServices(item);
-          }}
+          uniqueKey="id"
+          subKey="children"
+          selectText="Select a Vehicle"
+          showDropDowns={true}
+          readOnlyHeadings={true}
+          onSelectedItemsChange={selectVehicle}
+          single={true}
+          selectedItems={vehicleForDropdown}
         />
       </View>
       <FlatList
+        style={{ backgroundColor: "#eeeeee" }}
         data={services}
         renderItem={({ item }) => (
           <ListViewComponent
@@ -113,18 +181,20 @@ const ServiceScreen = (props) => {
             titleOne="Service Date"
             titleTwo="Service Mileage"
             buttonActionOne={editService}
+            buttonActionTwo={showDeleteConfirmation}
           />
         )}
         extraData={services}
         keyExtractor={(item) => item.id.toString()}
       />
+
       <FloatingAction
         actions={actions}
         onPressItem={() => {
           props.navigation.navigate("AddService", { isEdit: false });
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -134,8 +204,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    // backgroundColor: "blue",
-    // flexDirection: "row",
+    backgroundColor: "#fff",
   },
 });
 

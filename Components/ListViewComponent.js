@@ -22,6 +22,10 @@ export default (props) => {
   const actionOne = (id) => {
     props.buttonActionOne(id);
   };
+
+  const actionTwo = (id) => {
+    props.buttonActionTwo(id);
+  };
   return (
     <View style={styles.container}>
       <View style={{ width: "70%" }}>
@@ -48,6 +52,9 @@ export default (props) => {
               ></Icon>
             }
             type="clear"
+            onPress={(e) => {
+              actionTwo(props.id);
+            }}
           ></Button>
         </View>
         <View style={{ justifyContent: "center" }}>
@@ -78,9 +85,9 @@ const styles = StyleSheet.create({
     marginVertical: responsiveWidth(3),
     marginHorizontal: responsiveWidth(5),
     backgroundColor: "#fff",
-    borderColor: "black",
-    borderWidth: responsiveWidth(0.2),
-    // height: responsiveHeight(8),
+    borderColor: "#68B2A0",
+    borderRadius: 12,
+    borderWidth: responsiveWidth(0.3),
     padding: "2%",
     justifyContent: "space-between",
     flexDirection: "row",

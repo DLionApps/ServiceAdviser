@@ -73,4 +73,24 @@ const editService = async (serviceObj, serviceID) => {
   }
 };
 
-export { createService, getServiceBulletins, editService };
+const deleteService = async (serviceID) => {
+  try {
+    const ret = await axios
+      .delete(apiBaseUrl + `/api/service/${serviceID}`, await headers(true))
+      .then((response) => {
+        return { status: response.status, data: response.data };
+      })
+      .catch((error) => {
+        return {
+          messege: error.response.data.message,
+          status: error.response.status,
+        };
+      });
+
+    return ret;
+  } catch (x) {
+    console.log(x);
+  }
+};
+
+export { createService, getServiceBulletins, editService, deleteService };

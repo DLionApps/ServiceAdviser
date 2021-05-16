@@ -67,6 +67,11 @@ const ButtonStyles = {
   backgroundColor: "rgb(32, 189, 55)",
 };
 
+const messsegeTexts = {
+  fontSize: responsiveFontSize(2),
+  color: "gray",
+};
+
 export {
   screenHeading,
   StepperStyles,
@@ -76,4 +81,5 @@ export {
   screenDescription,
   textBoxStyles,
   submitButtonStyles,
+  messsegeTexts,
 };
