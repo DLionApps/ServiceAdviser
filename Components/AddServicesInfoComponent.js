@@ -39,8 +39,12 @@ import { VehicleContext } from "../Contexts/VehicleContext";
 import { login, signup } from "../CommonFunctions/Auth";
 import { createVehicle } from "../CommonFunctions/Vehicle";
 import { createService } from "../CommonFunctions/Service";
+import { AuthContext } from "../Contexts/AuthContext";
+import AlertComponent from "../Components/AlertComponent";
 
 export default function AddServicesInfoComponent(props) {
+  const { initialSignIn } = useContext(AuthContext);
+
   const { serviceState } = useContext(ServiceContext);
   const [service, setService] = serviceState;
   const { ownerState } = useContext(OwnerContext);
@@ -164,18 +168,19 @@ export default function AddServicesInfoComponent(props) {
         var serviceReturn = await createService(castedServiceObj);
         setService(serviceReturn.data);
 
-        setTimeout(() => {
+        setTimeout(async () => {
           elementsPopulator();
-          props.navigation.navigate("Home");
+          // props.navigation.navigate("Home");
+          await initialSignIn();
         }, 2000);
       } else {
-        ToastAndroid.show("Unexpected error occured", ToastAndroid.SHORT);
+        AlertComponent("Signup user", "Unexpected error occured");
         setTimeout(() => {
           BackHandler.exitApp();
         }, 3000);
       }
     } else {
-      ToastAndroid.show("Unexpected error occured", ToastAndroid.SHORT);
+      AlertComponent("Signup user", "Unexpected error occured");
       setTimeout(() => {
         BackHandler.exitApp();
       }, 3000);

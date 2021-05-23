@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -17,11 +17,13 @@ import {
   responsiveHeight,
 } from "react-native-responsive-dimensions";
 
+import { AuthContext } from "../Contexts/AuthContext";
+
 const HomeScreenMainContainer = ({ navigation }) => {
+  const { signOut } = useContext(AuthContext);
+
   const logoutUser = async () => {
-    await AsyncStorage.removeItem("auth-token");
-    await AsyncStorage.removeItem("ownerID");
-    navigation.navigate("Login");
+    await signOut();
   };
 
   return (

@@ -1,144 +1,205 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import * as SplashScreen from "expo-splash-screen";
+import React, { useState, useEffect, useContext } from "react";
+import { Button, Text, TextInput, View } from "react-native";
+
+import HomeScreen from "./Screens/HomeScreen";
+import LoginScreen from "./Screens/LoginScreen";
+import SignupStepperScreen from "./Screens/SignupStepperScreen";
+import ResetPasswordScreen from "./Screens/ResetPasswordScreen";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-
-import SignupStepperScreen from "./Screens/SignupStepperScreen";
-import HomeScreen from "./Screens/HomeScreen";
-import LoginScreen from "./Screens/LoginScreen";
-import ResetPasswordScreen from "./Screens/ResetPasswordScreen";
-import AddServiceScreen from "./Screens/AddServiceScreen";
-import AddVehicleScreen from "./Screens/AddVehicleScreen";
-import ServiceScreen from "./Screens/ServiceScreen";
-import VehicleScreen from "./Screens/VehicleScreen";
-import EditServiceScreen from "./Screens/EditServiceScreen";
 
 import { OwnerProvider } from "./Contexts/OwnerContext";
 import { VehicleProvider } from "./Contexts/VehicleContext";
 import { ServiceProvider } from "./Contexts/ServiceContext";
+import { AuthContext } from "./Contexts/AuthContext";
 
+import { login } from "./CommonFunctions/Auth";
 import GetToken from "./StaticFiles/GetToken";
+import RemoveToken from "./StaticFiles/RemoveToken";
 
-import CustomDrawerContent from "./Navigators/CustomDrawerContent";
-import MainStackNavigator from "./Navigators/MainStackNavigator";
+function SplashScreen() {
+  return (
+    <View>
+      <Text>Loading...</Text>
+    </View>
+  );
+}
 
-const App = () => {
-  const Stack = createStackNavigator();
-  const Drawer = createDrawerNavigator();
-  const [appIsReady, setAppIsReady] = useState(false);
-  const [initialRoute, setInitialRoute] = useState("");
+// function HomeScreen() {
+//   const { signOut } = React.useContext(AuthContext);
 
-  useEffect(() => {
-    async function holdUntilAppLoads() {
-      try {
-        await SplashScreen.preventAutoHideAsync();
-      } catch (e) {
-        console.log("Splash screen error");
-      } finally {
-        prepareResources();
+//   return (
+//     <View>
+//       <Text>Signed in!</Text>
+//       <Button title="Sign out" onPress={signOut} />
+//     </View>
+//   );
+// }
+
+// function SignInScreen() {
+//   const [username, setUsername] = React.useState("");
+//   const [password, setPassword] = React.useState("");
+
+//   const { signIn } = React.useContext(AuthContext);
+
+//   return (
+//     <View>
+//       <TextInput
+//         placeholder="Username"
+//         value={username}
+//         onChangeText={setUsername}
+//       />
+//       <TextInput
+//         placeholder="Password"
+//         value={password}
+//         onChangeText={setPassword}
+//         secureTextEntry
+//       />
+//       <Button title="Sign in" onPress={() => signIn({ username, password })} />
+//     </View>
+//   );
+// }
+
+const Stack = createStackNavigator();
+
+export default function App({ navigation }) {
+  const [state, dispatch] = React.useReducer(
+    (prevState, action) => {
+      switch (action.type) {
+        case "RESTORE_TOKEN":
+          return {
+            ...prevState,
+            userToken: action.token,
+            isLoading: false,
+          };
+        case "SIGN_IN":
+          return {
+            ...prevState,
+            isSignout: false,
+            userToken: action.token,
+          };
+        case "SIGN_OUT":
+          return {
+            ...prevState,
+            isSignout: true,
+            userToken: null,
+          };
       }
+    },
+    {
+      isLoading: true,
+      isSignout: false,
+      userToken: null,
     }
+  );
 
-    holdUntilAppLoads();
+  React.useEffect(() => {
+    // Fetch the token from storage then navigate to our appropriate place
+    const bootstrapAsync = async () => {
+      let userToken;
+
+      try {
+        // Restore token stored in `SecureStore` or any other encrypted storage
+        // userToken = await SecureStore.getItemAsync('userToken');
+        userToken = await GetToken();
+      } catch (e) {
+        // Restoring token failed
+      }
+
+      // After restoring token, we may need to validate it in production apps
+
+      // This will switch to the App screen or Auth screen and this loading
+      // screen will be unmounted and thrown away.
+      dispatch({ type: "RESTORE_TOKEN", token: userToken });
+    };
+
+    bootstrapAsync();
   }, []);
 
-  const prepareResources = async () => {
-    try {
-      let token = await GetToken();
-      if (token === null) {
-        setInitialRoute("Login");
-      } else {
-        setInitialRoute("Home");
-      }
-    } catch (e) {
-      console.warn(e);
-    } finally {
-      setAppIsReady(true);
-      await SplashScreen.hideAsync();
-    }
-  };
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async (values) => {
+        var loginReturn = await login({
+          email: values.email,
+          password: values.password,
+        });
 
-  if (!appIsReady) {
-    return null;
-  } else {
-    return (
+        if (loginReturn.status === 201) {
+          dispatch({ type: "SIGN_IN", token: loginReturn.token });
+        } else {
+          dispatch({ type: "SIGN_OUT" });
+        }
+        return loginReturn;
+
+        // In a production app, we need to send some data (usually username, password) to server and get a token
+        // We will also need to handle errors if sign in failed
+        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
+        // In the example, we'll use a dummy token
+      },
+      signOut: async () => {
+        RemoveToken();
+        dispatch({ type: "SIGN_OUT" });
+      },
+      //   signUp: async (data) => {
+      //     // In a production app, we need to send user data to server and get a token
+      //     // We will also need to handle errors if sign up failed
+      //     // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
+      //     // In the example, we'll use a dummy token
+
+      //     dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
+      //   },
+      initialSignIn: async () => {
+        // In a production app, we need to send user data to server and get a token
+        // We will also need to handle errors if sign up failed
+        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
+        // In the example, we'll use a dummy token
+        var userToken = await GetToken();
+        dispatch({ type: "SIGN_IN", token: userToken });
+      },
+    }),
+    []
+  );
+
+  return (
+    <AuthContext.Provider value={authContext}>
       <OwnerProvider>
         <VehicleProvider>
           <ServiceProvider>
             <NavigationContainer>
-              {initialRoute === "Login" ? (
-                <Stack.Navigator initialRouteName={initialRoute}>
+              <Stack.Navigator>
+                {state.isLoading ? (
+                  <Stack.Screen name="Splash" component={SplashScreen} />
+                ) : state.userToken == null ? (
+                  <>
+                    <Stack.Screen
+                      name="Login"
+                      component={LoginScreen}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="SignupStepper"
+                      component={SignupStepperScreen}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      options={{ headerShown: false }}
+                      name="ResetPassword"
+                      component={ResetPasswordScreen}
+                    />
+                  </>
+                ) : (
                   <Stack.Screen
-                    options={{ headerShown: false }}
-                    name="SignupStepper"
-                    component={SignupStepperScreen}
-                  />
-                  <Stack.Screen
-                    options={{ headerShown: false }}
-                    name="Login"
-                    component={LoginScreen}
-                  />
-                  <Stack.Screen
-                    options={{ headerShown: false }}
-                    name="ResetPassword"
-                    component={ResetPasswordScreen}
-                  />
-                  <Stack.Screen
-                    options={{ headerShown: false }}
                     name="Home"
                     component={HomeScreen}
+                    options={{ headerShown: false }}
                   />
-                  <Stack.Screen
-                    options={{ headerShown: true }}
-                    name="AddService"
-                    component={AddServiceScreen}
-                  />
-
-                  <Stack.Screen
-                    options={{ headerShown: true }}
-                    name="Vehicle"
-                    component={AddVehicleScreen}
-                  />
-                </Stack.Navigator>
-              ) : (
-                <Drawer.Navigator
-                  initialRouteName={initialRoute}
-                  drawerType="slide"
-                  drawerContent={(props) => <CustomDrawerContent {...props} />}
-                >
-                  <Drawer.Screen name="Home" component={MainStackNavigator} />
-                  <Drawer.Screen
-                    options={{ headerShown: true }}
-                    name="Service"
-                    component={ServiceScreen}
-                    initialParams={{ reloadUI: false }}
-                  />
-                  <Drawer.Screen
-                    options={{ headerShown: true }}
-                    name="Vehicle"
-                    component={VehicleScreen}
-                    initialParams={{ reloadUI: false }}
-                  />
-                </Drawer.Navigator>
-              )}
+                )}
+              </Stack.Navigator>
             </NavigationContainer>
           </ServiceProvider>
         </VehicleProvider>
       </OwnerProvider>
-    );
-  }
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
-
-export default App;
+    </AuthContext.Provider>
+  );
+}

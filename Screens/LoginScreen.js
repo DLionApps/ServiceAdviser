@@ -24,15 +24,18 @@ import {
   responsiveHeight,
 } from "react-native-responsive-dimensions";
 import { LoginSchema } from "../Constents/ValidationScheemas";
-import { login } from "../CommonFunctions/Auth";
-import { OwnerContext } from "../Contexts/OwnerContext";
+// import { login } from "../CommonFunctions/Auth";
+//import { OwnerContext } from "../Contexts/OwnerContext";
 import { getStatusBarHeight } from "react-native-status-bar-height";
+import { AuthContext } from "../Contexts/AuthContext";
 
 const LoginScreen = ({ navigation }) => {
   const [isLoadingVisible, setIsLoadingVisible] = useState(false);
   const [loginError, setLoginError] = useState(undefined);
-  const { ownerState } = useContext(OwnerContext);
-  const [owner, setOwner] = ownerState;
+  //const { ownerState } = useContext(OwnerContext);
+  //const [owner, setOwner] = ownerState;
+
+  const { signIn } = useContext(AuthContext);
 
   const loginSubmit = (values) => {
     sendAPICall(values);
@@ -40,16 +43,19 @@ const LoginScreen = ({ navigation }) => {
 
   const sendAPICall = async (values) => {
     elementsPopulator(true);
-
-    var loginReturn = await login({
+    var loginReturn = await signIn({
       email: values.email,
       password: values.password,
     });
+    // var loginReturn = await login({
+    //   email: values.email,
+    //   password: values.password,
+    // });
 
     elementsPopulator(false);
     if (loginReturn.status === 201) {
-      setOwner(loginReturn.data);
-      navigation.navigate("Home");
+      // setOwner(loginReturn.data);
+      // navigation.navigate("Home");
     } else {
       setLoginError(loginReturn.messege);
     }
