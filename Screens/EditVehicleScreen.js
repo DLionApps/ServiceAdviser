@@ -6,14 +6,18 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  ToastAndroid,
   ActivityIndicator,
 } from "react-native";
 import { Button, Input, Text, ButtonGroup } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Formik } from "formik";
 import { ScrollView } from "react-native-gesture-handler";
-import { Colors } from "../StaticFiles/BasicStyles";
+import {
+  Colors,
+  textBoxStyles,
+  submitButtonStyles,
+  titleStyle,
+} from "../StaticFiles/BasicStyles";
 import { vehiclePowerSources, vehicleTypes } from "../StaticFiles/staticData";
 import { getVehiclesFromAPIByID } from "../StaticFiles/GetObjectsFromAPI";
 import {
@@ -23,6 +27,7 @@ import {
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import { VehicleValidationSchema } from "../Constents/ValidationScheemas";
 import { editVehicle } from "../CommonFunctions/Vehicle";
+import AlertComponent from "../Components/AlertComponent";
 
 export default function EditVehicleScreen(props) {
   const { vehicleId, ownerID } = props.route.params;
@@ -58,14 +63,14 @@ export default function EditVehicleScreen(props) {
         let vehicleRet = await editVehicle(values, vehicleId);
         setIsLoadingVisible(false);
         if (vehicleRet.status === 201 || vehicleRet.status === 200) {
-          ToastAndroid.show("Vehicle saved successfully", ToastAndroid.LONG);
+          AlertComponent("Vehicle Edit", "Vehicle saved successfully");
           setTimeout(() => {
             props.navigation.navigate("Vehicle", {
               reloadUI: true,
             });
           }, 1500);
         } else {
-          ToastAndroid.show("Unexpected error occured", ToastAndroid.SHORT);
+          AlertComponent("Vehicle Edit", "Unexpected error occured");
           setTimeout(() => {
             props.navigation.navigate("Vehicle", {
               reloadUI: true,
@@ -115,141 +120,160 @@ export default function EditVehicleScreen(props) {
             errors,
             touched,
           }) => (
-            <>
+            <ScrollView contentContainerStyle={styles.wrapperContainer}>
+              <View style={styles.container}>
+                <Input
+                  laplaceholderbel="Vehicle Number"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
+                  leftIcon={<Icon name="envelope" size={18} color="#fff" />}
+                  onChangeText={handleChange("VRN")}
+                  onBlur={handleBlur("VRN")}
+                  value={values.VRN}
+                  errorMessage={touched.VRN && errors.VRN}
+                />
+                <Input
+                  placeholder="Nick Name"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
+                  leftIcon={<Icon name="lock" size={18} color="#fff" />}
+                  onChangeText={handleChange("nickName")}
+                  onBlur={handleBlur("nickName")}
+                  value={values.nickName}
+                  errorMessage={touched.nickName && errors.nickName}
+                />
+              </View>
+              <View style={styles.container}>
+                <Input
+                  placeholder="Make"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
+                  leftIcon={<Icon name="envelope" size={18} color="#fff" />}
+                  onChangeText={handleChange("make")}
+                  onBlur={handleBlur("make")}
+                  value={values.make}
+                  errorMessage={touched.make && errors.make}
+                />
+                <Input
+                  placeholder="Model"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
+                  leftIcon={<Icon name="lock" size={18} color="#fff" />}
+                  onChangeText={handleChange("model")}
+                  onBlur={handleBlur("model")}
+                  value={values.model}
+                  errorMessage={touched.model && errors.model}
+                />
+              </View>
+              <View style={[styles.container, { width: "100%" }]}>
+                <Input
+                  placeholder="Manufactured Year"
+                  inputContainerStyle={textBoxStyles}
+                  containerStyle={{ width: "50%" }}
+                  leftIcon={<Icon name="lock" size={18} color="#fff" />}
+                  onChangeText={handleChange("mfgYear")}
+                  onBlur={handleBlur("mfgYear")}
+                  keyboardType="numeric"
+                  value={values.mfgYear}
+                  errorMessage={touched.mfgYear && errors.mfgYear}
+                />
+              </View>
               <View
-                style={{
-                  alignItems: "flex-end",
-                  paddingTop: "5%",
-                  paddingRight: "5%",
-                }}
+                style={[
+                  styles.container,
+                  { paddingLeft: "2%", paddingRight: "2%" },
+                ]}
               >
-                <Button
-                  title="Save"
-                  type="outline"
-                  onPress={handleSubmit}
-                  containerStyle={{
-                    width: "47%",
+                <ButtonGroup
+                  onPress={(e) => setVehicleType(e)}
+                  selectedIndex={vehicleType}
+                  buttons={vehicleTypes}
+                  containerStyle={[
+                    textBoxStyles,
+                    {
+                      width: "100%",
+                    },
+                  ]}
+                  selectedButtonStyle={{
+                    backgroundColor: Colors.completedColor,
                   }}
                 />
               </View>
-              <ScrollView contentContainerStyle={styles.wrapperContainer}>
-                <View style={styles.container}>
-                  <Input
-                    label="Registration Number"
-                    placeholder="AA-0000"
-                    containerStyle={styles.textBoxStyles}
-                    leftIcon={<Icon name="envelope" size={18} color="#fff" />}
-                    onChangeText={handleChange("VRN")}
-                    onBlur={handleBlur("VRN")}
-                    value={values.VRN}
-                    errorMessage={touched.VRN && errors.VRN}
-                  />
-                  <Input
-                    label="Nick Name"
-                    placeholder="Nitro"
-                    containerStyle={styles.textBoxStyles}
-                    leftIcon={<Icon name="lock" size={24} color="#fff" />}
-                    onChangeText={handleChange("nickName")}
-                    onBlur={handleBlur("nickName")}
-                    value={values.nickName}
-                    errorMessage={touched.nickName && errors.nickName}
-                  />
-                </View>
-                <View style={styles.container}>
-                  <Input
-                    label="Make"
-                    containerStyle={styles.textBoxStyles}
-                    leftIcon={<Icon name="envelope" size={18} color="#fff" />}
-                    onChangeText={handleChange("make")}
-                    onBlur={handleBlur("make")}
-                    value={values.make}
-                    errorMessage={touched.make && errors.make}
-                  />
-                  <Input
-                    label="Model"
-                    containerStyle={styles.textBoxStyles}
-                    leftIcon={<Icon name="lock" size={24} color="#fff" />}
-                    onChangeText={handleChange("model")}
-                    onBlur={handleBlur("model")}
-                    value={values.model}
-                    errorMessage={touched.model && errors.model}
-                  />
-                </View>
-                <View style={[styles.container, { width: "100%" }]}>
-                  <Input
-                    label="Manufactured Year"
-                    containerStyle={styles.textBoxStyles}
-                    leftIcon={<Icon name="lock" size={24} color="#fff" />}
-                    onChangeText={handleChange("mfgYear")}
-                    onBlur={handleBlur("mfgYear")}
-                    keyboardType="numeric"
-                    value={values.mfgYear}
-                    errorMessage={touched.mfgYear && errors.mfgYear}
-                  />
-                </View>
-                <View
-                  style={[
-                    styles.container,
-                    { paddingLeft: "2%", paddingRight: "2%" },
-                  ]}
-                >
-                  <ButtonGroup
-                    onPress={(e) => setVehicleType(e)}
-                    selectedIndex={vehicleType}
-                    buttons={vehicleTypes}
-                    containerStyle={{
-                      width: "100%",
-                      borderWidth: responsiveWidth(0.2),
-                      borderColor: "gray",
-                    }}
-                    selectedButtonStyle={{
+              <View style={{ width: "100%", paddingTop: "6%" }}>
+                <SectionedMultiSelect
+                  styles={{
+                    selectToggleText: { paddingLeft: "5%" },
+                    selectToggle: [
+                      textBoxStyles,
+                      {
+                        width: "96%",
+                        alignSelf: "center",
+                      },
+                    ],
+                    chipsWrapper: {
+                      width: "96%",
+                      alignSelf: "center",
+                    },
+                    chipContainer: { borderColor: "white" },
+                    chipText: titleStyle,
+
+                    button: {
                       backgroundColor: Colors.completedColor,
-                    }}
-                  />
-                </View>
-                <View style={{ width: "100%", paddingTop: "6%" }}>
-                  <SectionedMultiSelect
-                    styles={{
-                      selectToggle: {
-                        borderColor: "gray",
-                        borderWidth: responsiveWidth(0.2),
-                        width: "96%",
-                        alignSelf: "center",
-                      },
-                      chipsWrapper: {
-                        // alignContent: "center",
-                        width: "96%",
-                        alignSelf: "center",
-                      },
-                      chipContainer: {
-                        backgroundColor: Colors.completedColor,
-                      },
-                      button: {
-                        backgroundColor: Colors.completedColor,
-                      },
-                    }}
-                    items={vehiclePowerSources}
-                    uniqueKey="id"
-                    subKey="children"
-                    selectText="Vehicle power source"
-                    showDropDowns={true}
-                    readOnlyHeadings={true}
-                    onSelectedItemsChange={fueltypeChange}
-                    selectedItems={fuelType}
-                  />
-                  {vehicleFuelTypeError === true && (
-                    <Text style={styles.powerSourceError}>
-                      Vehicle Power Source is required
-                    </Text>
-                  )}
-                </View>
-                <ActivityIndicator
-                  animating={isLoadingVisible}
-                  size="large"
-                  color="#00ff00"
+                    },
+                  }}
+                  items={vehiclePowerSources}
+                  uniqueKey="id"
+                  subKey="children"
+                  selectText="Vehicle power source"
+                  showDropDowns={true}
+                  readOnlyHeadings={true}
+                  onSelectedItemsChange={fueltypeChange}
+                  selectedItems={fuelType}
                 />
-              </ScrollView>
-            </>
+                {vehicleFuelTypeError === true && (
+                  <Text style={styles.powerSourceError}>
+                    Vehicle Power Source is required
+                  </Text>
+                )}
+              </View>
+              <ActivityIndicator
+                animating={isLoadingVisible}
+                size="large"
+                color="#00ff00"
+              />
+              <View style={styles.btnContainer}>
+                <Button
+                  type="outline"
+                  onPress={() => {
+                    props.navigation.navigate("Vehicle", {
+                      reloadUI: true,
+                    });
+                  }}
+                  title="Cancel"
+                  titleStyle={submitButtonStyles.titleStyle}
+                  containerStyle={[
+                    submitButtonStyles.containerStyle,
+                    {
+                      backgroundColor: "#6D6D6D",
+                      width: "40%",
+                      height: "70%",
+                    },
+                  ]}
+                  disabled={isLoadingVisible}
+                />
+                <Button
+                  type="outline"
+                  onPress={handleSubmit}
+                  title="Submit"
+                  titleStyle={submitButtonStyles.titleStyle}
+                  containerStyle={[
+                    submitButtonStyles.containerStyle,
+                    { width: "40%", height: "70%" },
+                  ]}
+                  disabled={isLoadingVisible}
+                />
+              </View>
+            </ScrollView>
           )}
         </Formik>
       </TouchableWithoutFeedback>
@@ -262,24 +286,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
+    paddingTop: "5%",
   },
   container: {
     flexDirection: "row",
   },
-  textBoxStyles: {
-    width: "50%",
-  },
-  btnText: {
-    fontSize: responsiveFontSize(3.5),
-    color: Colors.completedColor,
-  },
   btnContainer: {
-    paddingTop: "5%",
-    width: "80%",
     justifyContent: "space-around",
+    alignItems: "center",
     flexDirection: "row",
+    height: "10%",
+    width: "100%",
   },
-  typeButtonIcon: responsiveFontSize(4),
   powerSourceError: {
     paddingLeft: "4%",
     fontSize: responsiveFontSize(1.66),

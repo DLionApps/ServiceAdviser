@@ -49,4 +49,24 @@ const editVehicle = async (vehicleObj, vehicleID) => {
   }
 };
 
-export { createVehicle, editVehicle };
+const deleteVehicle = async (vehicleId) => {
+  try {
+    const ret = await axios
+      .delete(apiBaseUrl + `/api/vehicle/${vehicleId}`, await headers(true))
+      .then((response) => {
+        return { status: response.status, data: response.data };
+      })
+      .catch((error) => {
+        return {
+          messege: error.response.data.message,
+          status: error.response.status,
+        };
+      });
+
+    return ret;
+  } catch (x) {
+    console.log(x);
+  }
+};
+
+export { createVehicle, editVehicle, deleteVehicle };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, FlatList, SafeAreaView, View } from "react-native";
+import { StyleSheet, FlatList, SafeAreaView, View, Alert } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import {
   responsiveWidth,
@@ -10,6 +10,8 @@ import ListViewComponent from "../Components/ListViewComponent";
 import { FloatingAction } from "react-native-floating-action";
 import { getVehiclesFromAPI } from "../StaticFiles/GetObjectsFromAPI";
 import { useIsFocused } from "@react-navigation/native";
+import AlertComponent from "../Components/AlertComponent";
+import { deleteVehicle } from "../CommonFunctions/Vehicle";
 
 const VehicleScreen = (props) => {
   const actions = [
@@ -60,6 +62,37 @@ const VehicleScreen = (props) => {
     });
   };
 
+  const showDeleteConfirmation = (id) => {
+    Alert.alert(
+      "Delete vehicle",
+      "Are you sure you want to delete this vehicle?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => {
+            deleteServiceObj(id);
+          },
+        },
+      ]
+    );
+  };
+
+  const deleteServiceObj = async (vehicleID) => {
+    var ret = await deleteVehicle(vehicleID);
+
+    if (ret.status === 200) {
+      AlertComponent("Delete vehicle", "Vehicle deleted successfully");
+    } else {
+      AlertComponent("Delete vehicle", "Unexpected error occured");
+    }
+    getVehicles();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -74,6 +107,7 @@ const VehicleScreen = (props) => {
             titleTwo="Model"
             titleThree="Nick Name"
             buttonActionOne={editVehicle}
+            buttonActionTwo={showDeleteConfirmation}
           />
         )}
         extraData={vehicles}
