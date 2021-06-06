@@ -17,14 +17,14 @@ import {
   responsiveHeight,
 } from "react-native-responsive-dimensions";
 
-import { AuthContext } from "../Contexts/AuthContext";
+// import { AuthContext } from "../Contexts/AuthContext";
 
 const HomeScreenMainContainer = ({ navigation }) => {
-  const { signOut } = useContext(AuthContext);
+  // const { signOut } = useContext(AuthContext);
 
-  const logoutUser = async () => {
-    await signOut();
-  };
+  // const logoutUser = async () => {
+  //   await signOut();
+  // };
 
   return (
     <View
@@ -33,14 +33,14 @@ const HomeScreenMainContainer = ({ navigation }) => {
       }}
     >
       <Text>HOME</Text>
-      <Button
+      {/* <Button
         type="clear"
         onPress={() => {
-          logoutUser();
+          // logoutUser();
         }}
         title="Logout"
         titleStyle={styles.signupBtnText}
-      />
+      /> */}
     </View>
   );
 };

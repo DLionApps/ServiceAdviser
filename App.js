@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Button, Text, TextInput, View } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 import HomeScreen from "./Screens/HomeScreen";
 import LoginScreen from "./Screens/LoginScreen";
 import SignupStepperScreen from "./Screens/SignupStepperScreen";
 import ResetPasswordScreen from "./Screens/ResetPasswordScreen";
+import SettingsScreen from "./Screens/SettingsScreen";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { OwnerProvider } from "./Contexts/OwnerContext";
 import { VehicleProvider } from "./Contexts/VehicleContext";
@@ -17,6 +21,10 @@ import { AuthContext } from "./Contexts/AuthContext";
 import { login } from "./CommonFunctions/Auth";
 import GetToken from "./StaticFiles/GetToken";
 import RemoveToken from "./StaticFiles/RemoveToken";
+import { Colors } from "./StaticFiles/BasicStyles";
+
+import CustomDrawerContent from "./Navigators/CustomDrawerContent";
+import MainStackNavigator from "./Navigators/MainStackNavigator";
 
 function SplashScreen() {
   return (
@@ -62,6 +70,8 @@ function SplashScreen() {
 // }
 
 const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App({ navigation }) {
   const [state, dispatch] = React.useReducer(
@@ -167,35 +177,54 @@ export default function App({ navigation }) {
         <VehicleProvider>
           <ServiceProvider>
             <NavigationContainer>
-              <Stack.Navigator>
-                {state.isLoading ? (
-                  <Stack.Screen name="Splash" component={SplashScreen} />
-                ) : state.userToken == null ? (
-                  <>
-                    <Stack.Screen
-                      name="Login"
-                      component={LoginScreen}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="SignupStepper"
-                      component={SignupStepperScreen}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      options={{ headerShown: false }}
-                      name="ResetPassword"
-                      component={ResetPasswordScreen}
-                    />
-                  </>
-                ) : (
+              {state.userToken == null ? (
+                <Stack.Navigator>
                   <Stack.Screen
-                    name="Home"
-                    component={HomeScreen}
+                    name="Login"
+                    component={LoginScreen}
                     options={{ headerShown: false }}
                   />
-                )}
-              </Stack.Navigator>
+                  <Stack.Screen
+                    name="SignupStepper"
+                    component={SignupStepperScreen}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    options={{ headerShown: false }}
+                    name="ResetPassword"
+                    component={ResetPasswordScreen}
+                  />
+                </Stack.Navigator>
+              ) : (
+                <Tab.Navigator
+                  initialRouteName="Home"
+                  tabBarOptions={{
+                    activeTintColor: Colors.completedColor,
+                    showLabel: false,
+                  }}
+                >
+                  <Tab.Screen
+                    name="Home"
+                    component={MainStackNavigator}
+                    options={{
+                      // tabBarLabel: "Home",
+                      tabBarIcon: ({ color, size }) => (
+                        <Icon name="home" color={color} size={size} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="Settings"
+                    component={SettingsScreen}
+                    options={{
+                      // tabBarLabel: "Settings",
+                      tabBarIcon: ({ color, size }) => (
+                        <Icon name="bars" color={color} size={size} />
+                      ),
+                    }}
+                  />
+                </Tab.Navigator>
+              )}
             </NavigationContainer>
           </ServiceProvider>
         </VehicleProvider>

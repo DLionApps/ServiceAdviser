@@ -54,6 +54,7 @@ const StepperStyles = {
 const Colors = {
   incompletedColor: "rgb(214, 214, 214)",
   completedColor: "#7BE495",
+  iconColor: "#6D6D6D",
   // completedTextColor: "rgb(0, 0, 0)",
 };
 
@@ -72,6 +73,17 @@ const messsegeTexts = {
   color: "gray",
 };
 
+const settingsNavigationButtons = {
+  containerStyle: {
+    borderRadius: 12,
+    width: "90%",
+  },
+  titleStyle: {
+    fontSize: responsiveFontSize(2.5),
+    color: "#FFFFFF",
+  },
+};
+
 export {
   screenHeading,
   StepperStyles,
@@ -82,4 +94,5 @@ export {
   textBoxStyles,
   submitButtonStyles,
   messsegeTexts,
+  settingsNavigationButtons,
 };

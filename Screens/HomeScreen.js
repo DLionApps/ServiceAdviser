@@ -23,7 +23,8 @@ import { getStatusBarHeight } from "react-native-status-bar-height";
 const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <HomeScreenMainContainer navigation={navigation} />
+      <Text>Home</Text>
+      {/* <HomeScreenMainContainer navigation={navigation} /> */}
       {/* <QuickActionsComponents navigation={navigation} /> */}
     </View>
   );
@@ -36,7 +37,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
-    paddingTop: getStatusBarHeight(),
+    paddingTop: getStatusBarHeight() + 10,
+    // backgroundColor: "red",
   },
 });
 
