@@ -25,6 +25,7 @@ import { Colors } from "./StaticFiles/BasicStyles";
 
 import CustomDrawerContent from "./Navigators/CustomDrawerContent";
 import MainStackNavigator from "./Navigators/MainStackNavigator";
+import SettingsStackNavigator from "./Navigators/SettingsStackNavigator";
 
 function SplashScreen() {
   return (
@@ -215,7 +216,7 @@ export default function App({ navigation }) {
                   />
                   <Tab.Screen
                     name="Settings"
-                    component={SettingsScreen}
+                    component={SettingsStackNavigator}
                     options={{
                       // tabBarLabel: "Settings",
                       tabBarIcon: ({ color, size }) => (
