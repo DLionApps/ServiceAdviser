@@ -41,7 +41,7 @@ const SettingsScreen = ({ navigation }) => {
             buttonStyle={{ justifyContent: "flex-start" }}
             titleStyle={{ color: Colors.iconColor }}
             onPress={() => {
-              // navigateRouts("Owner");
+              navigateRouts("Owner");
             }}
           />
           <Button

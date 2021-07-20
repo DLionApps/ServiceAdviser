@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, Text, TextInput, View } from "react-native";
+import { Button, Text, TextInput, View, StatusBar } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import HomeScreen from "./Screens/HomeScreen";
@@ -75,6 +75,8 @@ const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function App({ navigation }) {
+  StatusBar.setBarStyle("dark-content", true);
+
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {

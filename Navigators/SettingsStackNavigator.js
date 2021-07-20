@@ -7,6 +7,7 @@ import EditVehicleScreen from "../Screens/EditVehicleScreen";
 import ServiceScreen from "../Screens/ServiceScreen";
 import VehicleScreen from "../Screens/VehicleScreen";
 import SettingsScreen from "../Screens/SettingsScreen";
+import EditOwnerScreen from "../Screens/EditOwnerScreen";
 
 const Stack = createStackNavigator();
 const SettingsStackNavigator = () => {
@@ -21,6 +22,7 @@ const SettingsStackNavigator = () => {
       <Stack.Screen name="EditService" component={EditServiceScreen} />
       <Stack.Screen name="AddVehicle" component={AddVehicleScreen} />
       <Stack.Screen name="EditVehicle" component={EditVehicleScreen} />
+      <Stack.Screen name="Owner" component={EditOwnerScreen} />
       <Stack.Screen name="Vehicle" component={VehicleScreen} />
       <Stack.Screen name="Service" component={ServiceScreen} />
     </Stack.Navigator>
