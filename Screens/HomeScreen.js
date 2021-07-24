@@ -8,7 +8,7 @@ import {
   Keyboard,
 } from "react-native";
 import { Button, Input, Text } from "react-native-elements";
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { ScrollView } from "react-native-gesture-handler";
 import {

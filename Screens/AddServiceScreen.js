@@ -35,7 +35,7 @@ import {
   MileageServiceValidationSchemaTwo,
 } from "../Constents/ValidationScheemas";
 import { createService, getServiceBulletins } from "../CommonFunctions/Service";
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/FontAwesome";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import { ScrollView } from "react-native-gesture-handler";

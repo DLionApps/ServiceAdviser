@@ -27,7 +27,7 @@ import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import { VehicleValidationSchema } from "../Constents/ValidationScheemas";
 import { VehicleContext } from "../Contexts/VehicleContext";
 import { createVehicle } from "../CommonFunctions/Vehicle";
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import AlertComponent from "../Components/AlertComponent";
 
 export default function AddVehicleScreen(props) {
